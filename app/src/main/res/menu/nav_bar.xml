@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/workouts"
+        android:title="@string/Workouts"
+        android:icon="@drawable/weight_lifter" />
+    <item
+        android:id="@+id/weight"
+        android:title="@string/Weight"
+        android:icon="@drawable/scale_bathroom"/>
+</menu>
