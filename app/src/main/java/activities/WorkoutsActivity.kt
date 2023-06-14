@@ -36,6 +36,12 @@ class WorkoutsActivity : Fragment() {
         binding.rvWorkouts.adapter = adapter
         binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
 
+        adapter.setOnItemClickListener(object : WorkoutsAdapter.onItemClickListener {
+            override fun onItemClick(position: Int) {
+                findNavController().navigate(R.id.action_workouts_to_exercises)
+            }
+        })
+
         binding.btnAddWorkout.setOnClickListener {
             val title = binding.etAddWorkout.text.toString()
             val workout = Workouts(title)
@@ -44,10 +50,6 @@ class WorkoutsActivity : Fragment() {
 
             binding.etAddWorkout.text.clear()
             requireActivity().hideKeyboard()
-        }
-
-        binding.textView1.setOnClickListener {
-            findNavController().navigate(R.id.action_workouts_to_weight)
         }
 
         return binding.root

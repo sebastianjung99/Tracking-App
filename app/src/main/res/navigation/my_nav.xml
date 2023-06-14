@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_workouts_to_weight"
             app:destination="@id/weight" />
+        <action
+            android:id="@+id/action_workouts_to_exercises"
+            app:destination="@id/exercises" />
     </fragment>
     <fragment
         android:id="@+id/weight"
@@ -23,4 +26,9 @@
             android:id="@+id/action_weight_to_workouts"
             app:destination="@id/workouts" />
     </fragment>
+    <fragment
+        android:id="@+id/exercises"
+        android:name="activities.ExercisesActivity"
+        android:label="fragment_exercises"
+        tools:layout="@layout/fragment_exercises"/>
 </navigation>

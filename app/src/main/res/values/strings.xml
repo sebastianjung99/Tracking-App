@@ -5,4 +5,6 @@
     <string name="Weight">Weight</string>
     <string name="Add">Add</string>
     <string name="NewWorkout">New Workout</string>
+    <string name="Reps">Reps</string>
+    <string name="AddExercise">Add Exercise</string>
 </resources>
