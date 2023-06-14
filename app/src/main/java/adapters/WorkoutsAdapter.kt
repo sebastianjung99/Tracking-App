@@ -1,9 +1,10 @@
-package com.example.trackingapp
+package adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.databinding.ItemWorkoutsBinding
+import data.Workouts
 
 class WorkoutsAdapter (
     var workouts: List<Workouts>

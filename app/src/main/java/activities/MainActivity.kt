@@ -1,9 +1,10 @@
-package com.example.trackingapp
+package activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.trackingapp.R
 import com.example.trackingapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

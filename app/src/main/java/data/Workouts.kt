@@ -1,4 +1,4 @@
-package com.example.trackingapp
+package data
 
 data class Workouts (
     val title: String

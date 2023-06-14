@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/workouts"
-        android:name="com.example.trackingapp.WorkoutsActivity"
+        android:name="activities.WorkoutsActivity"
         android:label="fragment_workouts"
         tools:layout="@layout/fragment_workouts" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/weight"
-        android:name="com.example.trackingapp.Weight"
+        android:name="activities.WeightActivity"
         android:label="fragment_weight"
         tools:layout="@layout/fragment_weight" >
         <action

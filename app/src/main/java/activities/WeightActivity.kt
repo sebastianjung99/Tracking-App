@@ -1,4 +1,4 @@
-package com.example.trackingapp
+package activities
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentWeightBinding
 
 
 /**
  * A simple [Fragment] subclass.
  */
-class Weight : Fragment() {
+class WeightActivity : Fragment() {
 
     var _binding: FragmentWeightBinding? = null
     val binding get() = _binding!!
