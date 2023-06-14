@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
+import utils.Utils.hideKeyboard
 
 /**
  * A simple [Fragment] subclass.
@@ -37,6 +38,9 @@ class WorkoutsActivity : Fragment() {
             val workout = Workouts(title)
             workoutsList.add(workout)
             adapter.notifyItemInserted(workoutsList.size - 1)
+
+            binding.etAddWorkout.text.clear()
+            requireActivity().hideKeyboard()
         }
 
         binding.textView1.setOnClickListener {
