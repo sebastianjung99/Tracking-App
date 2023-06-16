@@ -11,6 +11,7 @@ import com.example.trackingapp.R
 import data.Workouts
 import adapters.WorkoutsAdapter
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
+import com.google.android.material.snackbar.Snackbar
 import utils.Utils.hideKeyboard
 
 /**
@@ -44,12 +45,23 @@ class WorkoutsActivity : Fragment() {
 
         binding.btnAddWorkout.setOnClickListener {
             val title = binding.etAddWorkout.text.toString()
-            val workout = Workouts(title)
-            workoutsList.add(workout)
-            adapter.notifyItemInserted(workoutsList.size - 1)
+            if (title.trim().isEmpty()) {
+                // TODO: replace action with vector graphic?
+                Snackbar.make(
+                    requireContext(),
+                    binding.root,
+                    getString(R.string.NewWorkoutEmptyEditTextPrompt),
+                    Snackbar.LENGTH_SHORT
+                ).setAction("X"){}.show()
+            }
+            else {
+                val workout = Workouts(title)
+                workoutsList.add(workout)
+                adapter.notifyItemInserted(workoutsList.size - 1)
 
-            binding.etAddWorkout.text.clear()
-            requireActivity().hideKeyboard()
+                binding.etAddWorkout.text.clear()
+                requireActivity().hideKeyboard()
+            }
         }
 
         return binding.root
