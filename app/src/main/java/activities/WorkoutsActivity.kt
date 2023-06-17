@@ -10,9 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import data.Workouts
 import adapters.WorkoutsAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
+import data.WorkoutsDatabase
 import utils.Utils.hideKeyboard
+import viewmodels.WorkoutsViewModel
+import viewmodels.WorkoutsViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -22,20 +26,20 @@ class WorkoutsActivity : Fragment() {
     var _binding: FragmentWorkoutsBinding? = null
     val binding get() = _binding!!
 
+    private lateinit var viewModel: WorkoutsViewModel
+    private lateinit var adapter: WorkoutsAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
+        val dao = WorkoutsDatabase.getInstance(requireActivity().application).workoutsDao()
+        val factory = WorkoutsViewModelFactory(dao)
+        viewModel = ViewModelProvider(this, factory).get(WorkoutsViewModel::class.java)
 
-        var workoutsList = mutableListOf(
-            Workouts("Sample Workout"),
-            Workouts("Another Sample Workout")
-        )
-        val adapter = WorkoutsAdapter(workoutsList)
-        binding.rvWorkouts.adapter = adapter
-        binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
+        initRecyclerView()
 
         adapter.setOnItemClickListener(object : WorkoutsAdapter.onItemClickListener {
             override fun onItemClick(position: Int) {
@@ -55,16 +59,34 @@ class WorkoutsActivity : Fragment() {
                 ).setAction("X"){}.show()
             }
             else {
-                val workout = Workouts(title)
-                workoutsList.add(workout)
-                adapter.notifyItemInserted(workoutsList.size - 1)
-
-                binding.etAddWorkout.text.clear()
-                requireActivity().hideKeyboard()
+                saveWorkoutData()
             }
         }
 
         return binding.root
+    }
+
+    private fun saveWorkoutData() {
+        viewModel.insertWorkout(
+            Workouts(
+                id = 0,
+                title = binding.etAddWorkout.text.toString()
+            )
+        )
+        binding.etAddWorkout.text.clear()
+        requireActivity().hideKeyboard()
+    }
+
+    private fun initRecyclerView() {
+        adapter = WorkoutsAdapter()
+        binding.rvWorkouts.adapter = adapter
+        binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
+
+        // display workouts list
+        viewModel.workouts.observe(viewLifecycleOwner, {
+            adapter.setList(it)
+            adapter.notifyDataSetChanged()
+        })
     }
 
     override fun onDestroy() {

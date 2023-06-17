@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.databinding.ItemWorkoutsBinding
 import data.Workouts
 
-class WorkoutsAdapter (
-    private var workouts: List<Workouts>
-    ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
+class WorkoutsAdapter(): RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
+
+    private val workoutsList = ArrayList<Workouts>()
 
     private lateinit var mListener : onItemClickListener
     interface  onItemClickListener {
@@ -25,13 +25,18 @@ class WorkoutsAdapter (
     }
 
     override fun getItemCount(): Int {
-        return workouts.size
+        return workoutsList.size
     }
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
         holder.binding.apply {
-            tvWorkouts.text = workouts[position].title
+            tvWorkouts.text = workoutsList[position].title
         }
+    }
+
+    fun setList(workouts: List<Workouts>) {
+        workoutsList.clear()
+        workoutsList.addAll(workouts)
     }
 
     inner class WorkoutsViewHolder(val binding: ItemWorkoutsBinding, listener: onItemClickListener) : RecyclerView.ViewHolder(binding.root) {
