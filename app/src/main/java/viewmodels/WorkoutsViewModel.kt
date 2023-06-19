@@ -15,8 +15,8 @@ class WorkoutsViewModel(
         dao.insertWorkout(workouts)
     }
 
-    fun deleteWorkout(workouts: Workouts) = viewModelScope.launch {
-        dao.deleteWorkout(workouts)
+    fun deleteWorkout(workouts_id: Int) = viewModelScope.launch {
+        dao.deleteWorkout(workouts_id)
     }
 
     fun updateWorkout(workouts: Workouts) = viewModelScope.launch {

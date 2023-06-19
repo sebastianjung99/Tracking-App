@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import data.Workouts
 import adapters.WorkoutsAdapter
+import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProvider
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
@@ -42,8 +44,15 @@ class WorkoutsActivity : Fragment() {
         initRecyclerView()
 
         adapter.setOnItemClickListener(object : WorkoutsAdapter.onItemClickListener {
-            override fun onItemClick(position: Int) {
-                findNavController().navigate(R.id.action_workouts_to_exercises)
+            override fun onItemClick(position: Int, view: View, workouts: Workouts) {
+                when (view.id) {
+                    binding.root.id -> {
+                        findNavController().navigate(R.id.action_workouts_to_exercises)
+                    }
+                    R.id.btnEditWorkout -> {
+                        singleWorkoutPopUpMenu(view, workouts)
+                    }
+                }
             }
         })
 
@@ -75,6 +84,36 @@ class WorkoutsActivity : Fragment() {
         )
         binding.etAddWorkout.text.clear()
         requireActivity().hideKeyboard()
+    }
+
+    private fun deleteWorkoutData(workouts_id: Int) {
+        viewModel.deleteWorkout(workouts_id)
+    }
+
+    private fun singleWorkoutPopUpMenu(btnView: View, workouts: Workouts) {
+        val popup = PopupMenu(binding.root.context, btnView)
+        popup.menuInflater.inflate(R.menu.workouts_menu, popup.menu)
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.option_delete -> {
+                    deleteWorkoutData(workouts.id)
+                    true
+                }
+                R.id.option_edit -> {
+                    // TODO: implement edit option
+                    Toast.makeText(
+                        binding.root.context,
+                        "edit pressed",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    true
+                }
+                else -> {
+                    true
+                }
+            }
+        }
+        popup.show()
     }
 
     private fun initRecyclerView() {

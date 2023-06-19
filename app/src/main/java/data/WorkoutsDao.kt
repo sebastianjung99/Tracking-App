@@ -2,7 +2,6 @@ package data
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -15,8 +14,8 @@ interface WorkoutsDao {
     @Update
     suspend fun updateWorkout(workouts: Workouts)
 
-    @Delete
-    suspend fun deleteWorkout(workouts: Workouts)
+    @Query("DELETE FROM workouts_data_table WHERE workout_id = :workouts_id")
+    suspend fun deleteWorkout(workouts_id: Int)
 
     @Query("SELECT * FROM workouts_data_table")
     fun getAllWorkouts():LiveData<List<Workouts>>
