@@ -10,8 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import data.Workouts
 import adapters.WorkoutsAdapter
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
@@ -90,6 +97,15 @@ class WorkoutsActivity : Fragment() {
         viewModel.deleteWorkout(workouts_id)
     }
 
+    private fun updateWorkoutData(workouts: Workouts, newTitle: String) {
+        viewModel.updateWorkout(
+            Workouts(
+                id = workouts.id,
+                title = newTitle
+            )
+        )
+    }
+
     private fun singleWorkoutPopUpMenu(btnView: View, workouts: Workouts) {
         val popup = PopupMenu(binding.root.context, btnView)
         popup.menuInflater.inflate(R.menu.workouts_menu, popup.menu)
@@ -100,17 +116,80 @@ class WorkoutsActivity : Fragment() {
                     true
                 }
                 R.id.option_edit -> {
-                    // TODO: implement edit option
-                    Toast.makeText(
-                        binding.root.context,
-                        "edit pressed",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    // hide workout title and edit button, show edit Text and cancel+save button
+
+                    val workoutsTextView: TextView =
+                        binding.rvWorkouts.findContainingItemView(btnView)!!
+                            .findViewById<TextView>(R.id.tvWorkouts)
+                    val editWorkoutButton: ImageButton =
+                        binding.rvWorkouts.findContainingItemView(btnView)!!
+                            .findViewById<ImageButton>(R.id.btnEditWorkout)
+                    val editWorkoutText: EditText =
+                        binding.rvWorkouts.findContainingItemView(btnView)!!
+                            .findViewById<EditText>(R.id.etWorkouts)
+                    val editWorkoutSaveButton: ImageButton =
+                        binding.rvWorkouts.findContainingItemView(btnView)!!
+                            .findViewById<ImageButton>(R.id.btnEditWorkoutSave)
+                    val editWorkoutCancelButton: ImageButton =
+                        binding.rvWorkouts.findContainingItemView(btnView)!!
+                            .findViewById<ImageButton>(R.id.btnEditWorkoutCancel)
+
+                    // hide and show relevant elements
+                    workoutsTextView.visibility = GONE
+                    editWorkoutButton.visibility = GONE
+                    editWorkoutText.visibility = VISIBLE
+                    editWorkoutText.setText(workouts.title)
+                    editWorkoutSaveButton.visibility = VISIBLE
+                    editWorkoutCancelButton.visibility = VISIBLE
+
+                    // set focus and show soft keyboard
+                    editWorkoutText.requestFocus()
+                    WindowCompat.getInsetsController(requireActivity().window, editWorkoutText).show(
+                        WindowInsetsCompat.Type.ime())
+
+                    editWorkoutSaveButton.setOnClickListener {
+                        // check if empty
+                        val title = editWorkoutText.text.toString()
+                        if (title.trim().isEmpty()) {
+                            // TODO: replace action with vector graphic?
+                            Snackbar.make(
+                                requireContext(),
+                                binding.root,
+                                getString(R.string.WorkoutTitleCannotBeEmpty),
+                                Snackbar.LENGTH_SHORT
+                            ).setAction("X"){}.show()
+                        }
+                        else {
+                            // update database and hide editText and cancel+save button, show title and edit button
+                            updateWorkoutData(workouts, title)
+                            workoutsTextView.visibility = VISIBLE
+                            editWorkoutButton.visibility = VISIBLE
+                            editWorkoutText.visibility = GONE
+                            editWorkoutSaveButton.visibility = GONE
+                            editWorkoutCancelButton.visibility = GONE
+
+                            Toast.makeText(
+                                requireContext(),
+                                R.string.WorkoutUpdated,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    }
+
+                    editWorkoutCancelButton.setOnClickListener {
+                        requireActivity().hideKeyboard()
+                        // hide and show relevant elements
+                        workoutsTextView.visibility = VISIBLE
+                        editWorkoutButton.visibility = VISIBLE
+                        editWorkoutText.visibility = GONE
+                        editWorkoutSaveButton.visibility = GONE
+                        editWorkoutCancelButton.visibility = GONE
+                    }
+
                     true
                 }
-                else -> {
-                    true
-                }
+                else -> true
             }
         }
         popup.show()
