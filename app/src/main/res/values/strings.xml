@@ -21,4 +21,10 @@
     <string name="WorkoutTitle">Workout Title</string>
     <string name="ExerciseName">Exercise Name</string>
     <string name="NewExercise">New Exercise</string>
+    <string name="SetNumber">Set Number</string>
+    <string name="RemoveSet">Remove Set</string>
+    <string name="AddSet">Add Set</string>
+    <string name="ExerciseUpdated">Exercise Updated!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

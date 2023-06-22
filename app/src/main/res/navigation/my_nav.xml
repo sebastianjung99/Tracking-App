@@ -30,5 +30,14 @@
         android:id="@+id/exercises"
         android:name="activities.ExercisesActivity"
         android:label="fragment_exercises"
-        tools:layout="@layout/fragment_exercises"/>
+        tools:layout="@layout/fragment_exercises">
+        <action
+            android:id="@+id/action_exercises_to_singleExercise"
+            app:destination="@id/singleExercise" />
+    </fragment>
+    <fragment
+        android:id="@+id/singleExercise"
+        android:name="com.example.trackingapp.singleExercise"
+        android:label="fragment_single_exercise"
+        tools:layout="@layout/fragment_single_exercise" />
 </navigation>

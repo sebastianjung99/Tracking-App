@@ -21,7 +21,7 @@ class ExerciseSetAdapter(
 
     override fun onBindViewHolder(holder: SingleExerciseViewHolder, position: Int) {
         holder.binding.apply {
-            tvExerciseSet.text = "test"
+            tvExerciseSetNumber.text = singleExercise[position].setNumber.toString()
         }
     }
 
