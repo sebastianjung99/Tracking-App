@@ -1,30 +1,51 @@
 package adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.databinding.ItemExercisesBinding
 import data.Exercises
 
 class ExercisesAdapter (
     var exercises: List<Exercises>
-    ) : RecyclerView.Adapter<ExercisesAdapter.WorkoutViewHolder>() {
+    ) : RecyclerView.Adapter<ExercisesAdapter.ExercisesViewHolder>() {
 
-    inner class WorkoutViewHolder(val binding: ItemExercisesBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ExercisesViewHolder(val binding: ItemExercisesBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExercisesViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemExercisesBinding.inflate(layoutInflater, parent, false)
-        return WorkoutViewHolder(binding)
+        return ExercisesViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return exercises.size
     }
 
-    override fun onBindViewHolder(holder: WorkoutViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExercisesViewHolder, position: Int) {
         holder.binding.apply {
-            tvExercise.text = exercises[position].title
+            val item = exercises[position]
+
+            tvExercise.text = item.title
+
+            rvSingleExercise.setHasFixedSize(true)
+            rvSingleExercise.layoutManager = LinearLayoutManager(holder.itemView.context)
+
+            val adapter = ExerciseSetAdapter(item.setsList)
+            rvSingleExercise.adapter = adapter
+
+            // expandable functionality
+            val isExpandable = item.isExpendable
+            rvSingleExercise.visibility = if (isExpandable) View.VISIBLE else View.GONE
+
+            layoutSingleExercise.setOnClickListener {
+                // reverse
+                item.isExpendable = !item.isExpendable
+
+                notifyItemChanged(position)
+            }
         }
     }
 

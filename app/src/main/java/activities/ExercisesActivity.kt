@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.databinding.FragmentExercisesBinding
 import data.Exercises
+import data.ExerciseSet
 
 /**
  * A simple [Fragment] subclass.
@@ -25,9 +26,14 @@ class ExercisesActivity : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
 
+        var setsList: MutableList<ExerciseSet> = mutableListOf(
+            ExerciseSet(1, 12, 100),
+            ExerciseSet(2, 10, 100),
+            ExerciseSet(3, 11, 95)
+        )
         var exerciseList = mutableListOf(
-            Exercises("Sample Exercise"),
-            Exercises("Another Sample Exercise")
+            Exercises("Sample Exercise", setsList),
+            Exercises("Another Sample Exercise", setsList)
         )
 
         val adapter = ExercisesAdapter(exerciseList)
