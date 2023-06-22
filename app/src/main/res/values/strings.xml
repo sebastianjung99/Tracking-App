@@ -13,10 +13,12 @@
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
 
-    <string name="NewWorkoutEmptyEditTextPrompt">Please enter the title for your new workout.</string>
+    <string name="NewWorkoutEmptyEditTextPrompt">Please enter the workout title.</string>
+    <string name="AddExerciseEmptyEditTextPrompt">Please enter the exercise title.</string>
     <string name="WorkoutOptions">Workout Options</string>
     <string name="WorkoutUpdated">Workout Updated</string>
     <string name="WorkoutTitleCannotBeEmpty">Workout Title cannot be empty!</string>
     <string name="WorkoutTitle">Workout Title</string>
     <string name="ExerciseName">Exercise Name</string>
+    <string name="NewExercise">New Exercise</string>
 </resources>

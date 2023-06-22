@@ -17,14 +17,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <EditText
+        android:id="@+id/etAddExercise"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/NewExercise"
+        android:inputType="text"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnAddExercise"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
         android:id="@+id/btnAddExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rvExercises"
-        app:layout_constraintEnd_toEndOf="@+id/rvExercises"
-        android:src="@drawable/plus"
-        android:contentDescription="@string/AddExercise"/>
+        android:text="@string/Add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
