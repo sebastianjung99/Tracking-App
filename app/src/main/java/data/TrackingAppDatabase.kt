@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [Workouts::class, Exercises::class],
+    entities = [Workouts::class, Exercises::class, WorkoutExerciseMap::class],
     version = 1
 )
 @TypeConverters(Converters::class)
