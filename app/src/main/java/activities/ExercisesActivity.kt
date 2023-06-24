@@ -26,10 +26,8 @@ import data.TrackingAppDatabase
 import data.relations.WorkoutExerciseCrossRef
 import kotlinx.coroutines.launch
 import utils.Utils.hideKeyboard
-import viewmodels.ExercisesViewModel
-import viewmodels.ExercisesViewModelFactory
-import viewmodels.WorkoutsViewModel
-import viewmodels.WorkoutsViewModelFactory
+import viewmodels.WorkoutViewModel
+import viewmodels.WorkoutViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -41,8 +39,7 @@ class ExercisesActivity : Fragment() {
     var _binding: FragmentExercisesBinding? = null
     val binding get() = _binding!!
 
-    private lateinit var exerciseViewModel: ExercisesViewModel
-    private lateinit var workoutViewModel: WorkoutsViewModel
+    private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: ExercisesAdapter
 
     override fun onCreateView(
@@ -52,13 +49,9 @@ class ExercisesActivity : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
 
-        val exerciseDao = TrackingAppDatabase.getInstance(requireActivity().application).exercisesDao()
-        val exerciseFactory = ExercisesViewModelFactory(exerciseDao, args.workoutId)
-        exerciseViewModel = ViewModelProvider(this, exerciseFactory).get(ExercisesViewModel::class.java)
-
-        val workoutDao = TrackingAppDatabase.getInstance(requireActivity().application).workoutsDao()
-        val workoutFactory = WorkoutsViewModelFactory(workoutDao, args.workoutId)
-        workoutViewModel = ViewModelProvider(this, workoutFactory).get(WorkoutsViewModel::class.java)
+        val workoutDao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
+        val workoutFactory = WorkoutViewModelFactory(workoutDao, args.workoutId)
+        this.viewModel = ViewModelProvider(this, workoutFactory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
 
@@ -97,14 +90,14 @@ class ExercisesActivity : Fragment() {
     private fun saveExerciseData() {
         val title = binding.etAddExercise.text.toString()
         lifecycleScope.launch {
-            val exerciseId = exerciseViewModel.insertExercise(
+            val exerciseId = this@ExercisesActivity.viewModel.insertExercise(
                 Exercise(
                     exerciseId = 0,
                     exerciseTitle = title
                 )
             )
 
-            workoutViewModel.insertWorkoutExerciseCrossRef(
+            this@ExercisesActivity.viewModel.insertWorkoutExerciseCrossRef(
                 WorkoutExerciseCrossRef(
                     workout_id = args.workoutId,
                     exercise_id = exerciseId.toInt()
@@ -140,23 +133,19 @@ class ExercisesActivity : Fragment() {
     }
 
     private fun deleteExercise(exercises_id: Int) {
-        exerciseViewModel.deleteExercise(exercises_id)
-
-        workoutViewModel.reloadExercisesOfWorkout()
+        this.viewModel.deleteExercise(exercises_id)
     }
 
     private fun updateExercise(
         exercise: Exercise,
         newTitle: String = exercise.exerciseTitle
     ) {
-        exerciseViewModel.updateExercise(
+        this.viewModel.updateExercise(
             Exercise(
                 exerciseId = exercise.exerciseId,
                 exerciseTitle = newTitle
             )
         )
-
-        workoutViewModel.reloadExercisesOfWorkout()
     }
 
     private fun singleExercisePopupMenu(btnView: View, exercise: Exercise) {
@@ -255,7 +244,7 @@ class ExercisesActivity : Fragment() {
         binding.rvExercises.adapter = adapter
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
 
-        workoutViewModel.exercisesOfWorkout.observe(viewLifecycleOwner) {
+        this.viewModel.exercisesOfWorkout.observe(viewLifecycleOwner) {
             adapter.setList(it.exercises)
             adapter.notifyDataSetChanged()
         }

@@ -2,15 +2,15 @@ package viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import data.ExercisesDao
+import data.WorkoutDao
 
-class ExercisesViewModelFactory(
-    private val dao: ExercisesDao,
+class WorkoutViewModelFactory(
+    private val dao: WorkoutDao,
     private val workoutId: Int
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(ExercisesViewModel::class.java)) {
-            return ExercisesViewModel(dao, workoutId) as T
+        if(modelClass.isAssignableFrom(WorkoutViewModel::class.java)) {
+            return WorkoutViewModel(dao, workoutId) as T
         }
         throw IllegalArgumentException("Unknown View Model Class")
     }

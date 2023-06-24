@@ -15,8 +15,7 @@ import data.relations.WorkoutExerciseCrossRef
     version = 1
 )
 abstract class TrackingAppDatabase: RoomDatabase() {
-    abstract fun workoutsDao(): WorkoutsDao
-    abstract fun exercisesDao(): ExercisesDao
+    abstract fun workoutDao(): WorkoutDao
 
     companion object {
         @Volatile

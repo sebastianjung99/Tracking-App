@@ -24,8 +24,8 @@ import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
 import data.TrackingAppDatabase
 import utils.Utils.hideKeyboard
-import viewmodels.WorkoutsViewModel
-import viewmodels.WorkoutsViewModelFactory
+import viewmodels.WorkoutViewModel
+import viewmodels.WorkoutViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -35,7 +35,7 @@ class WorkoutsActivity : Fragment() {
     var _binding: FragmentWorkoutsBinding? = null
     val binding get() = _binding!!
 
-    private lateinit var viewModel: WorkoutsViewModel
+    private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: WorkoutsAdapter
 
     override fun onCreateView(
@@ -44,9 +44,9 @@ class WorkoutsActivity : Fragment() {
     ): View {
         // Inflate the layout for this fragment
        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
-        val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutsDao()
-        val factory = WorkoutsViewModelFactory(dao, 0)
-        viewModel = ViewModelProvider(this, factory).get(WorkoutsViewModel::class.java)
+        val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
+        val factory = WorkoutViewModelFactory(dao, 0)
+        viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
 
