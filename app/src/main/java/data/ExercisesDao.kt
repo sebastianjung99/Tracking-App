@@ -9,21 +9,15 @@ import androidx.room.Update
 @Dao
 interface ExercisesDao {
     @Insert
-    suspend fun insertExercise(exercises: Exercises)
+    suspend fun insertExercise(exercise: Exercise): Long
 
     @Update
-    suspend fun updateExercise(exercises: Exercises)
+    suspend fun updateExercise(exercise: Exercise)
 
     @Query("DELETE FROM exercises_data_table WHERE exercise_id = :exerciseId")
     suspend fun deleteExercise(exerciseId: Int)
 
-    @Query("SELECT * FROM exercises_data_table WHERE exercise_title = :exerciseTitle")
-    fun getExerciseByTitle(exerciseTitle: String): Exercises?
-
-    @Query("SELECT * FROM exercises_data_table WHERE exercise_includedInWorkoutIDs LIKE '%' || :workoutID || '%'")
-    fun getAllExercisesByWorkoutId(workoutID: Int): LiveData<List<Exercises>>
-
     @Query("SELECT * FROM exercises_data_table")
-    fun getAllExercises(): LiveData<List<Exercises>>
+    fun getAllExercises(): LiveData<List<Exercise>>
 
 }

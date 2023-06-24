@@ -2,7 +2,7 @@ package viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import data.Exercises
+import data.Exercise
 import data.ExercisesDao
 import kotlinx.coroutines.launch
 
@@ -11,22 +11,15 @@ class ExercisesViewModel(
     private val workoutId: Int
 ): ViewModel() {
     val exercises = dao.getAllExercises()
-    val exercisesByWorkoutIDs = dao.getAllExercisesByWorkoutId(workoutId)
 
-    fun insertExercise(exercises: Exercises) = viewModelScope.launch {
-        dao.insertExercise(exercises)
-    }
+    suspend fun insertExercise(exercise: Exercise) = dao.insertExercise(exercise)
 
     fun deleteExercise(exercise_id: Int) = viewModelScope.launch {
         dao.deleteExercise(exercise_id)
     }
 
-    fun updateExercise(exercises: Exercises) = viewModelScope.launch {
-        dao.updateExercise(exercises)
-    }
-
-    fun getExerciseByTitle(exerciseTitle: String): Exercises? {
-        return dao.getExerciseByTitle(exerciseTitle)
+    fun updateExercise(exercise: Exercise) = viewModelScope.launch {
+        dao.updateExercise(exercise)
     }
 
 }

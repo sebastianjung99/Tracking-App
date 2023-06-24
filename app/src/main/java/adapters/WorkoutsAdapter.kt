@@ -5,17 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.databinding.ItemWorkoutsBinding
-import data.Workouts
+import data.Workout
 
 
 class WorkoutsAdapter(
 ): RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
-    private val workoutsList = ArrayList<Workouts>()
+    private val workoutList = ArrayList<Workout>()
 
     private lateinit var mListener : onItemClickListener
     interface  onItemClickListener {
-        fun onItemClick(position: Int, view: View, workouts: Workouts)
+        fun onItemClick(position: Int, view: View, workout: Workout)
     }
     fun setOnItemClickListener(listener: onItemClickListener) {
         mListener = listener
@@ -28,28 +28,28 @@ class WorkoutsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return workoutsList.size
+        return workoutList.size
     }
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
         holder.binding.apply {
-            tvWorkouts.text = workoutsList[position].title
+            tvWorkouts.text = workoutList[position].workoutTitle
         }
     }
 
-    fun setList(workouts: List<Workouts>) {
-        workoutsList.clear()
-        workoutsList.addAll(workouts)
+    fun setList(workouts: List<Workout>) {
+        workoutList.clear()
+        workoutList.addAll(workouts)
     }
 
     inner class WorkoutsViewHolder(val binding: ItemWorkoutsBinding, listener: onItemClickListener) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
-                listener.onItemClick(bindingAdapterPosition, it, workoutsList[bindingAdapterPosition])
+                listener.onItemClick(bindingAdapterPosition, it, workoutList[bindingAdapterPosition])
             }
 
             binding.btnEditWorkout.setOnClickListener {
-                listener.onItemClick(bindingAdapterPosition, it, workoutsList[bindingAdapterPosition])
+                listener.onItemClick(bindingAdapterPosition, it, workoutList[bindingAdapterPosition])
             }
         }
     }
