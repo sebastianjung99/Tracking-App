@@ -50,6 +50,12 @@ class WorkoutViewModel(
         dao.updateExercise(exercise)
     }
 
+    fun getExerciseByTitle(exerciseTitle: String): Exercise {
+        return dao.getExerciseByTitle(exerciseTitle)
+    }
+
+
+
 
 
     /*********************************************/

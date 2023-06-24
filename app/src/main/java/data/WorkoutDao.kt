@@ -3,6 +3,7 @@ package data
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import data.relations.ExerciseWithWorkouts
@@ -43,12 +44,15 @@ interface WorkoutDao {
     @Query("SELECT * FROM exercises_data_table")
     fun getAllExercises(): LiveData<List<Exercise>>
 
+    @Query("SELECT * FROM exercises_data_table WHERE exercise_title = :exerciseTitle")
+    fun getExerciseByTitle(exerciseTitle: String): Exercise
+
 
 
     /*********************************************/
     /**********         CROSSREF        **********/
     /*********************************************/
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertWorkoutExerciseCrossRef(crossRef: WorkoutExerciseCrossRef)
 
     @Query("DELETE FROM WorkoutExerciseCrossRef WHERE workout_id = :workoutId AND exercise_id = :exerciseId")

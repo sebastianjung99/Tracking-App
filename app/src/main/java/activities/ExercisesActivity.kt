@@ -89,45 +89,36 @@ class ExercisesActivity : Fragment() {
 
     private fun saveExerciseData() {
         val title = binding.etAddExercise.text.toString()
-        lifecycleScope.launch {
-            val exerciseId = viewModel.insertExercise(
-                Exercise(
-                    exerciseId = 0,
-                    exerciseTitle = title
-                )
-            )
-
-            viewModel.insertWorkoutExerciseCrossRef(
-                WorkoutExerciseCrossRef(
-                    workout_id = args.workoutId,
-                    exercise_id = exerciseId.toInt()
-                )
-            )
-        }
 
         // TODO: check if exercise already exists, maybe something like this?:
-//        val existingExercise = exerciseViewModel.getExerciseByTitle(title)
-//        if (existingExercise != null) {
-//            // add current workoutID to exercise_includedInWorkoutIDs if not already in
-//            if (!existingExercise.includedInWorkoutIDs.contains(args.workoutId)) {
-//                var newIncludedInWorkoutIDs =  existingExercise.includedInWorkoutIDs.toMutableList()
-//                newIncludedInWorkoutIDs.add(args.workoutId)
-//                updateExercise(
-//                    exercise = existingExercise,
-//                    newTitle = existingExercise.exerciseTitle,
-//                    newIncludedInWorkoutIDs = newIncludedInWorkoutIDs
-//                )
-//            }
-//        }
-//        else {
-//            exerciseViewModel.insertExercise(
-//                Exercise(
-//                    exerciseId = 0,
-//                    exerciseTitle = title,
-//                    includedInWorkoutIDs = listOf<Int>(args.workoutId)
-//                )
-//            )
-//        }
+        lifecycleScope.launch {
+            val existingExercise = viewModel.getExerciseByTitle(title)
+
+            // don't be fooled if IDE says expression is always true
+            if (existingExercise != null) {
+                viewModel.insertWorkoutExerciseCrossRef(
+                    WorkoutExerciseCrossRef(
+                        workout_id = args.workoutId,
+                        exercise_id = existingExercise.exerciseId
+                    )
+                )
+            }
+            else {
+                val exerciseId = viewModel.insertExercise(
+                    Exercise(
+                        exerciseId = 0,
+                        exerciseTitle = title
+                    )
+                )
+                viewModel.insertWorkoutExerciseCrossRef(
+                    WorkoutExerciseCrossRef(
+                        workout_id = args.workoutId,
+                        exercise_id = exerciseId.toInt()
+                    )
+                )
+            }
+        }
+
 
         binding.etAddExercise.text.clear()
         requireActivity().hideKeyboard()
