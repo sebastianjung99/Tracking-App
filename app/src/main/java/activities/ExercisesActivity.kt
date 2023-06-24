@@ -21,7 +21,7 @@ import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentExercisesBinding
 import com.google.android.material.snackbar.Snackbar
 import data.Exercises
-import data.ExercisesDatabase
+import data.TrackingAppDatabase
 import utils.Utils.hideKeyboard
 import viewmodels.ExercisesViewModel
 import viewmodels.ExercisesViewModelFactory
@@ -45,7 +45,7 @@ class ExercisesActivity : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
-        val dao = ExercisesDatabase.getInstance(requireActivity().application).exercisesDao()
+        val dao = TrackingAppDatabase.getInstance(requireActivity().application).exercisesDao()
         val factory = ExercisesViewModelFactory(dao, args.workoutId)
         viewModel = ViewModelProvider(this, factory).get(ExercisesViewModel::class.java)
 
@@ -84,13 +84,29 @@ class ExercisesActivity : Fragment() {
     }
 
     private fun saveExerciseData() {
-        viewModel.insertExercise(
-            Exercises(
-                id = 0,
-                title = binding.etAddExercise.text.toString(),
-                includedInWorkoutId = args.workoutId
+        val title = binding.etAddExercise.text.toString()
+        val existingExercise = viewModel.getExerciseByTitle(title)
+        if (existingExercise != null) {
+            // add current workoutID to exercise_includedInWorkoutIDs if not already in
+            if (!existingExercise.includedInWorkoutIDs.contains(args.workoutId)) {
+                var newIncludedInWorkoutIDs =  existingExercise.includedInWorkoutIDs.toMutableList()
+                newIncludedInWorkoutIDs.add(args.workoutId)
+                updateExercise(
+                    exercises = existingExercise,
+                    newTitle = existingExercise.title,
+                    newIncludedInWorkoutIDs = newIncludedInWorkoutIDs
+                )
+            }
+        }
+        else {
+            viewModel.insertExercise(
+                Exercises(
+                    id = 0,
+                    title = title,
+                    includedInWorkoutIDs = listOf<Int>(args.workoutId)
+                )
             )
-        )
+        }
         binding.etAddExercise.text.clear()
         requireActivity().hideKeyboard()
     }
@@ -99,12 +115,16 @@ class ExercisesActivity : Fragment() {
         viewModel.deleteExercise(exercises_id)
     }
 
-    private fun updateExercise(exercises: Exercises, newTitle: String) {
+    private fun updateExercise(
+        exercises: Exercises,
+        newTitle: String = exercises.title,
+        newIncludedInWorkoutIDs: List<Int> = exercises.includedInWorkoutIDs
+    ) {
         viewModel.updateExercise(
             Exercises(
                 id = exercises.id,
                 title = newTitle,
-                includedInWorkoutId = args.workoutId
+                includedInWorkoutIDs = newIncludedInWorkoutIDs
             )
         )
     }
@@ -115,7 +135,7 @@ class ExercisesActivity : Fragment() {
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
 
         // display workouts list
-        viewModel.exercisesByWorkoutId.observe(viewLifecycleOwner, {
+        viewModel.exercisesByWorkoutIDs.observe(viewLifecycleOwner, {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
         })

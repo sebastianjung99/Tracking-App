@@ -22,7 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
-import data.WorkoutsDatabase
+import data.TrackingAppDatabase
 import utils.Utils.hideKeyboard
 import viewmodels.WorkoutsViewModel
 import viewmodels.WorkoutsViewModelFactory
@@ -44,7 +44,7 @@ class WorkoutsActivity : Fragment() {
     ): View {
         // Inflate the layout for this fragment
        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
-        val dao = WorkoutsDatabase.getInstance(requireActivity().application).workoutsDao()
+        val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutsDao()
         val factory = WorkoutsViewModelFactory(dao)
         viewModel = ViewModelProvider(this, factory).get(WorkoutsViewModel::class.java)
 
@@ -94,6 +94,7 @@ class WorkoutsActivity : Fragment() {
         requireActivity().hideKeyboard()
     }
 
+    // TODO: remove workoutID from exercise_includedInWorkoutIDs
     private fun deleteWorkoutData(workouts_id: Int) {
         viewModel.deleteWorkout(workouts_id)
     }

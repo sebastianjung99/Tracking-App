@@ -4,25 +4,29 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(
-    entities = [Workouts::class],
+    entities = [Workouts::class, Exercises::class],
     version = 1
 )
-abstract class WorkoutsDatabase: RoomDatabase() {
+@TypeConverters(Converters::class)
+abstract class TrackingAppDatabase: RoomDatabase() {
     abstract fun workoutsDao(): WorkoutsDao
+    abstract fun exercisesDao(): ExercisesDao
+
     companion object {
         @Volatile
-        private var INSTANCE: WorkoutsDatabase? = null
-        fun getInstance(context: Context): WorkoutsDatabase {
+        private var INSTANCE: TrackingAppDatabase? = null
+        fun getInstance(context: Context): TrackingAppDatabase {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        WorkoutsDatabase::class.java,
-                        "workouts_database"
-                    ).build()
+                        TrackingAppDatabase::class.java,
+                        "trackingApp_database"
+                    ).allowMainThreadQueries().build()
                 }
                 return instance
             }

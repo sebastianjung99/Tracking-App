@@ -11,7 +11,7 @@ class ExercisesViewModel(
     private val workoutId: Int
 ): ViewModel() {
     val exercises = dao.getAllExercises()
-    val exercisesByWorkoutId = dao.gettAllExercisesByWorkoutId(workoutId)
+    val exercisesByWorkoutIDs = dao.getAllExercisesByWorkoutId(workoutId)
 
     fun insertExercise(exercises: Exercises) = viewModelScope.launch {
         dao.insertExercise(exercises)
@@ -23,6 +23,10 @@ class ExercisesViewModel(
 
     fun updateExercise(exercises: Exercises) = viewModelScope.launch {
         dao.updateExercise(exercises)
+    }
+
+    fun getExerciseByTitle(exerciseTitle: String): Exercises? {
+        return dao.getExerciseByTitle(exerciseTitle)
     }
 
 }
