@@ -5,10 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "workouts_data_table")
-data class Workouts (
+data class Workout (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "workout_id")
-    val id: Int,
+    val workoutId: Int,
     @ColumnInfo(name = "workout_title")
-    val title: String
+    val workoutTitle: String
 )

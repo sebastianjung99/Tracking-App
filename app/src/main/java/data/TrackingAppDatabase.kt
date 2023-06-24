@@ -4,16 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import data.relations.WorkoutExerciseCrossRef
 
 @Database(
-    entities = [Workouts::class, Exercises::class],
+    entities = [
+        Workout::class,
+        Exercise::class,
+        WorkoutExerciseCrossRef::class
+    ],
     version = 1
 )
-@TypeConverters(Converters::class)
 abstract class TrackingAppDatabase: RoomDatabase() {
-    abstract fun workoutsDao(): WorkoutsDao
-    abstract fun exercisesDao(): ExercisesDao
+    abstract fun workoutDao(): WorkoutDao
 
     companion object {
         @Volatile

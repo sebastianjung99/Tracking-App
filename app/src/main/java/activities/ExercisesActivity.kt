@@ -14,17 +14,20 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentExercisesBinding
 import com.google.android.material.snackbar.Snackbar
-import data.Exercises
+import data.Exercise
 import data.TrackingAppDatabase
+import data.relations.WorkoutExerciseCrossRef
+import kotlinx.coroutines.launch
 import utils.Utils.hideKeyboard
-import viewmodels.ExercisesViewModel
-import viewmodels.ExercisesViewModelFactory
+import viewmodels.WorkoutViewModel
+import viewmodels.WorkoutViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -36,7 +39,7 @@ class ExercisesActivity : Fragment() {
     var _binding: FragmentExercisesBinding? = null
     val binding get() = _binding!!
 
-    private lateinit var viewModel: ExercisesViewModel
+    private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: ExercisesAdapter
 
     override fun onCreateView(
@@ -45,20 +48,21 @@ class ExercisesActivity : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
-        val dao = TrackingAppDatabase.getInstance(requireActivity().application).exercisesDao()
-        val factory = ExercisesViewModelFactory(dao, args.workoutId)
-        viewModel = ViewModelProvider(this, factory).get(ExercisesViewModel::class.java)
+
+        val workoutDao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
+        val workoutFactory = WorkoutViewModelFactory(workoutDao, args.workoutId)
+        viewModel = ViewModelProvider(this, workoutFactory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
 
         adapter.setOnItemClickListener(object : ExercisesAdapter.onItemClickListener {
-            override fun onItemClick(position: Int, view: View, exercises: Exercises) {
+            override fun onItemClick(position: Int, view: View, exercise: Exercise) {
                 when (view.id) {
                     binding.root.id -> {
                         findNavController().navigate(R.id.action_exercises_to_singleExercise)
                     }
                     R.id.btnEditExercise -> {
-                        singleExercisePopupMenu(view, exercises)
+                        singleExercisePopupMenu(view, exercise)
                     }
                 }
             }
@@ -85,69 +89,77 @@ class ExercisesActivity : Fragment() {
 
     private fun saveExerciseData() {
         val title = binding.etAddExercise.text.toString()
-        val existingExercise = viewModel.getExerciseByTitle(title)
-        if (existingExercise != null) {
-            // add current workoutID to exercise_includedInWorkoutIDs if not already in
-            if (!existingExercise.includedInWorkoutIDs.contains(args.workoutId)) {
-                var newIncludedInWorkoutIDs =  existingExercise.includedInWorkoutIDs.toMutableList()
-                newIncludedInWorkoutIDs.add(args.workoutId)
-                updateExercise(
-                    exercises = existingExercise,
-                    newTitle = existingExercise.title,
-                    newIncludedInWorkoutIDs = newIncludedInWorkoutIDs
+        lifecycleScope.launch {
+            val exerciseId = viewModel.insertExercise(
+                Exercise(
+                    exerciseId = 0,
+                    exerciseTitle = title
                 )
-            }
-        }
-        else {
-            viewModel.insertExercise(
-                Exercises(
-                    id = 0,
-                    title = title,
-                    includedInWorkoutIDs = listOf<Int>(args.workoutId)
+            )
+
+            viewModel.insertWorkoutExerciseCrossRef(
+                WorkoutExerciseCrossRef(
+                    workout_id = args.workoutId,
+                    exercise_id = exerciseId.toInt()
                 )
             )
         }
+
+        // TODO: check if exercise already exists, maybe something like this?:
+//        val existingExercise = exerciseViewModel.getExerciseByTitle(title)
+//        if (existingExercise != null) {
+//            // add current workoutID to exercise_includedInWorkoutIDs if not already in
+//            if (!existingExercise.includedInWorkoutIDs.contains(args.workoutId)) {
+//                var newIncludedInWorkoutIDs =  existingExercise.includedInWorkoutIDs.toMutableList()
+//                newIncludedInWorkoutIDs.add(args.workoutId)
+//                updateExercise(
+//                    exercise = existingExercise,
+//                    newTitle = existingExercise.exerciseTitle,
+//                    newIncludedInWorkoutIDs = newIncludedInWorkoutIDs
+//                )
+//            }
+//        }
+//        else {
+//            exerciseViewModel.insertExercise(
+//                Exercise(
+//                    exerciseId = 0,
+//                    exerciseTitle = title,
+//                    includedInWorkoutIDs = listOf<Int>(args.workoutId)
+//                )
+//            )
+//        }
+
         binding.etAddExercise.text.clear()
         requireActivity().hideKeyboard()
     }
 
-    private fun deleteExercise(exercises_id: Int) {
-        viewModel.deleteExercise(exercises_id)
+    private fun deleteExercise(workoutId: Int, exerciseId: Int) {
+        viewModel.deleteExercise(exerciseId)
+        viewModel.deleteWorkoutExerciseCrossRef(
+            workoutId = workoutId,
+            exerciseId = exerciseId
+        )
     }
 
     private fun updateExercise(
-        exercises: Exercises,
-        newTitle: String = exercises.title,
-        newIncludedInWorkoutIDs: List<Int> = exercises.includedInWorkoutIDs
+        exercise: Exercise,
+        newTitle: String = exercise.exerciseTitle
     ) {
         viewModel.updateExercise(
-            Exercises(
-                id = exercises.id,
-                title = newTitle,
-                includedInWorkoutIDs = newIncludedInWorkoutIDs
+            Exercise(
+                exerciseId = exercise.exerciseId,
+                exerciseTitle = newTitle
             )
         )
     }
 
-    private fun initRecyclerView() {
-        adapter = ExercisesAdapter()
-        binding.rvExercises.adapter = adapter
-        binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
-
-        // display workouts list
-        viewModel.exercisesByWorkoutIDs.observe(viewLifecycleOwner, {
-            adapter.setList(it)
-            adapter.notifyDataSetChanged()
-        })
-    }
-
-    private fun singleExercisePopupMenu(btnView: View, exercises: Exercises) {
+    private fun singleExercisePopupMenu(btnView: View, exercise: Exercise) {
         val popup = PopupMenu(binding.root.context, btnView)
         popup.menuInflater.inflate(R.menu.exercises_menu, popup.menu)
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.option_delete -> {
-                    deleteExercise(exercises.id)
+                    deleteExercise(workoutId = args.workoutId, exerciseId = exercise.exerciseId)
                     true
                 }
                 R.id.option_edit -> {
@@ -173,7 +185,7 @@ class ExercisesActivity : Fragment() {
                     exerciseTextView.visibility = View.GONE
                     editExerciseButton.visibility = View.GONE
                     editExerciseEditText.visibility = View.VISIBLE
-                    editExerciseEditText.setText(exercises.title)
+                    editExerciseEditText.setText(exercise.exerciseTitle)
                     editExerciseSaveButton.visibility = View.VISIBLE
                     editExerciseCancelButton.visibility = View.VISIBLE
 
@@ -196,7 +208,7 @@ class ExercisesActivity : Fragment() {
                         }
                         else {
                             // update database and hide editText and cancel+save button, show title and edit button
-                            updateExercise(exercises, title)
+                            updateExercise(exercise, title)
                             exerciseTextView.visibility = View.VISIBLE
                             editExerciseButton.visibility = View.VISIBLE
                             editExerciseEditText.visibility = View.GONE
@@ -208,6 +220,7 @@ class ExercisesActivity : Fragment() {
                                 R.string.ExerciseUpdated,
                                 Toast.LENGTH_SHORT
                             ).show()
+
                         }
 
                     }
@@ -231,4 +244,19 @@ class ExercisesActivity : Fragment() {
     }
 
 
+    private fun initRecyclerView() {
+        adapter = ExercisesAdapter()
+        binding.rvExercises.adapter = adapter
+        binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.exercisesOfWorkout.observe(viewLifecycleOwner) {
+            adapter.setList(it.exercises)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
-import data.Workouts
+import data.Workout
 import adapters.WorkoutsAdapter
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -24,8 +24,8 @@ import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
 import data.TrackingAppDatabase
 import utils.Utils.hideKeyboard
-import viewmodels.WorkoutsViewModel
-import viewmodels.WorkoutsViewModelFactory
+import viewmodels.WorkoutViewModel
+import viewmodels.WorkoutViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -35,7 +35,7 @@ class WorkoutsActivity : Fragment() {
     var _binding: FragmentWorkoutsBinding? = null
     val binding get() = _binding!!
 
-    private lateinit var viewModel: WorkoutsViewModel
+    private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: WorkoutsAdapter
 
     override fun onCreateView(
@@ -44,21 +44,21 @@ class WorkoutsActivity : Fragment() {
     ): View {
         // Inflate the layout for this fragment
        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
-        val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutsDao()
-        val factory = WorkoutsViewModelFactory(dao)
-        viewModel = ViewModelProvider(this, factory).get(WorkoutsViewModel::class.java)
+        val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
+        val factory = WorkoutViewModelFactory(dao, 0)
+        viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
 
         adapter.setOnItemClickListener(object : WorkoutsAdapter.onItemClickListener {
-            override fun onItemClick(position: Int, view: View, workouts: Workouts) {
+            override fun onItemClick(position: Int, view: View, workout: Workout) {
                 when (view.id) {
                     binding.root.id -> {
-                        val action = WorkoutsActivityDirections.actionWorkoutsToExercises(workouts.id)
+                        val action = WorkoutsActivityDirections.actionWorkoutsToExercises(workout.workoutId)
                         findNavController().navigate(action)
                     }
                     R.id.btnEditWorkout -> {
-                        singleWorkoutPopUpMenu(view, workouts)
+                        singleWorkoutPopUpMenu(view, workout)
                     }
                 }
             }
@@ -85,9 +85,9 @@ class WorkoutsActivity : Fragment() {
 
     private fun saveWorkoutData() {
         viewModel.insertWorkout(
-            Workouts(
-                id = 0,
-                title = binding.etAddWorkout.text.toString()
+            Workout(
+                workoutId = 0,
+                workoutTitle = binding.etAddWorkout.text.toString()
             )
         )
         binding.etAddWorkout.text.clear()
@@ -99,22 +99,22 @@ class WorkoutsActivity : Fragment() {
         viewModel.deleteWorkout(workouts_id)
     }
 
-    private fun updateWorkoutData(workouts: Workouts, newTitle: String) {
+    private fun updateWorkoutData(workout: Workout, newTitle: String) {
         viewModel.updateWorkout(
-            Workouts(
-                id = workouts.id,
-                title = newTitle
+            Workout(
+                workoutId = workout.workoutId,
+                workoutTitle = newTitle
             )
         )
     }
 
-    private fun singleWorkoutPopUpMenu(btnView: View, workouts: Workouts) {
+    private fun singleWorkoutPopUpMenu(btnView: View, workout: Workout) {
         val popup = PopupMenu(binding.root.context, btnView)
         popup.menuInflater.inflate(R.menu.workouts_menu, popup.menu)
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.option_delete -> {
-                    deleteWorkoutData(workouts.id)
+                    deleteWorkoutData(workout.workoutId)
                     true
                 }
                 R.id.option_edit -> {
@@ -140,7 +140,7 @@ class WorkoutsActivity : Fragment() {
                     workoutsTextView.visibility = GONE
                     editWorkoutButton.visibility = GONE
                     editWorkoutText.visibility = VISIBLE
-                    editWorkoutText.setText(workouts.title)
+                    editWorkoutText.setText(workout.workoutTitle)
                     editWorkoutSaveButton.visibility = VISIBLE
                     editWorkoutCancelButton.visibility = VISIBLE
 
@@ -163,7 +163,7 @@ class WorkoutsActivity : Fragment() {
                         }
                         else {
                             // update database and hide editText and cancel+save button, show title and edit button
-                            updateWorkoutData(workouts, title)
+                            updateWorkoutData(workout, title)
                             workoutsTextView.visibility = VISIBLE
                             editWorkoutButton.visibility = VISIBLE
                             editWorkoutText.visibility = GONE
@@ -197,16 +197,17 @@ class WorkoutsActivity : Fragment() {
         popup.show()
     }
 
+
     private fun initRecyclerView() {
         adapter = WorkoutsAdapter()
         binding.rvWorkouts.adapter = adapter
         binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
 
         // display workouts list
-        viewModel.workouts.observe(viewLifecycleOwner, {
+        viewModel.workouts.observe(viewLifecycleOwner) {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
-        })
+        }
     }
 
     override fun onDestroy() {
