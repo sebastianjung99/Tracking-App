@@ -7,9 +7,11 @@ import data.ExercisesDao
 import kotlinx.coroutines.launch
 
 class ExercisesViewModel(
-    private val dao: ExercisesDao
+    private val dao: ExercisesDao,
+    private val workoutId: Int
 ): ViewModel() {
     val exercises = dao.getAllExercises()
+    val exercisesByWorkoutId = dao.gettAllExercisesByWorkoutId(workoutId)
 
     fun insertExercise(exercises: Exercises) = viewModelScope.launch {
         dao.insertExercise(exercises)

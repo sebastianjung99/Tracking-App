@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentExercisesBinding
@@ -30,6 +31,8 @@ import viewmodels.ExercisesViewModelFactory
  */
 class ExercisesActivity : Fragment() {
 
+    val args: ExercisesActivityArgs by navArgs()
+
     var _binding: FragmentExercisesBinding? = null
     val binding get() = _binding!!
 
@@ -43,7 +46,7 @@ class ExercisesActivity : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
         val dao = ExercisesDatabase.getInstance(requireActivity().application).exercisesDao()
-        val factory = ExercisesViewModelFactory(dao)
+        val factory = ExercisesViewModelFactory(dao, args.workoutId)
         viewModel = ViewModelProvider(this, factory).get(ExercisesViewModel::class.java)
 
         initRecyclerView()
@@ -84,7 +87,8 @@ class ExercisesActivity : Fragment() {
         viewModel.insertExercise(
             Exercises(
                 id = 0,
-                title = binding.etAddExercise.text.toString()
+                title = binding.etAddExercise.text.toString(),
+                includedInWorkoutId = args.workoutId
             )
         )
         binding.etAddExercise.text.clear()
@@ -99,7 +103,8 @@ class ExercisesActivity : Fragment() {
         viewModel.updateExercise(
             Exercises(
                 id = exercises.id,
-                title = newTitle
+                title = newTitle,
+                includedInWorkoutId = args.workoutId
             )
         )
     }
@@ -110,7 +115,7 @@ class ExercisesActivity : Fragment() {
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
 
         // display workouts list
-        viewModel.exercises.observe(viewLifecycleOwner, {
+        viewModel.exercisesByWorkoutId.observe(viewLifecycleOwner, {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
         })

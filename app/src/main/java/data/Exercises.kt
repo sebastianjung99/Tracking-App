@@ -9,6 +9,8 @@ data class Exercises (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "exercise_id")
     val id: Int,
-    @ColumnInfo(name ="exercise_title")
-    val title: String
+    @ColumnInfo(name = "exercise_title")
+    val title: String,
+    @ColumnInfo(name = "exercise_includedInWorkoutId")
+    val includedInWorkoutId: Int
 )

@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_exercises_to_singleExercise"
             app:destination="@id/singleExercise" />
+        <argument
+            android:name="workoutId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/singleExercise"
