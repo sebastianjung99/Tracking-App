@@ -8,8 +8,9 @@ class Converters {
     fun intListToJson(value: List<Int>?) = Gson().toJson(value)
 
     @TypeConverter
-    fun exercisesListToJson(value: Exercises?) = Gson().toJson(value)
+    fun exercisesListToJson(value: List<Exercises>?) = Gson().toJson(value)
 
     @TypeConverter
-    fun jsonToExercisesList(value: String) = Gson().fromJson(value, Exercises::class.java)
+    fun jsonToExercisesList(value: String) = Gson().fromJson(value, Array<Exercises>::class.java).toList()
+
 }

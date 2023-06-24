@@ -104,6 +104,7 @@ class ExercisesActivity : Fragment() {
                 exercises = existingExercise,
                 newTitle = existingExercise.title
             )
+            // TODO: ADD TO WORKOUT
         }
         // case: exercise is new
         else {
@@ -113,19 +114,18 @@ class ExercisesActivity : Fragment() {
                 title = title,
             )
             viewModel.insertExercise(exercise)
-        }
 
-        // add exercise to workout
-        workouts.exercises
-
-
-        workoutsViewModel.updateWorkout(
-            Workouts(
-                id = workouts.id,
-                title = workouts.title,
-                exercises = workoutsViewModel.exercisesByWorkoutId
+            // add exercise to workout
+            var exerciseList = workouts.exerciseList.toMutableList()
+            exerciseList.add(exercise)
+            workoutsViewModel.updateWorkout(
+                Workouts(
+                    id = workouts.id,
+                    title = workouts.title,
+                    exerciseList = exerciseList
+                )
             )
-        )
+        }
 
         binding.etAddExercise.text.clear()
         requireActivity().hideKeyboard()

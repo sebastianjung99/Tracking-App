@@ -14,5 +14,5 @@ data class Workouts (
     @ColumnInfo(name = "workout_title")
     val title: String,
     @ColumnInfo(name = "workout_exerciseList")
-    val exercises: Exercises?
+    val exerciseList: List<Exercises>
 )

@@ -13,7 +13,7 @@ class WorkoutsViewModel(
     private val workoutId: Int
 ): ViewModel() {
     val workouts = dao.getAllWorkouts()
-    val exercisesByWorkoutId = dao.getExercisesByWorkoutId(workoutId)
+//    val exercisesByWorkoutId = dao.getExercisesByWorkoutId(workoutId)
 
     fun insertWorkout(workouts: Workouts) = viewModelScope.launch {
         dao.insertWorkout(workouts)
