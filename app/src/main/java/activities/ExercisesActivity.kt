@@ -99,7 +99,8 @@ class ExercisesActivity : Fragment() {
                 viewModel.insertWorkoutExerciseCrossRef(
                     WorkoutExerciseCrossRef(
                         workout_id = args.workoutId,
-                        exercise_id = existingExercise.exerciseId
+                        exercise_id = existingExercise.exerciseId,
+                        adapter.itemCount
                     )
                 )
             }
@@ -113,7 +114,8 @@ class ExercisesActivity : Fragment() {
                 viewModel.insertWorkoutExerciseCrossRef(
                     WorkoutExerciseCrossRef(
                         workout_id = args.workoutId,
-                        exercise_id = exerciseId.toInt()
+                        exercise_id = exerciseId.toInt(),
+                        adapter.itemCount
                     )
                 )
             }
