@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
+import data.Exercises
 import data.TrackingAppDatabase
 import utils.Utils.hideKeyboard
 import viewmodels.WorkoutsViewModel
@@ -45,7 +46,7 @@ class WorkoutsActivity : Fragment() {
         // Inflate the layout for this fragment
        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
         val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutsDao()
-        val factory = WorkoutsViewModelFactory(dao)
+        val factory = WorkoutsViewModelFactory(dao, 0)
         viewModel = ViewModelProvider(this, factory).get(WorkoutsViewModel::class.java)
 
         initRecyclerView()
@@ -87,7 +88,8 @@ class WorkoutsActivity : Fragment() {
         viewModel.insertWorkout(
             Workouts(
                 id = 0,
-                title = binding.etAddWorkout.text.toString()
+                title = binding.etAddWorkout.text.toString(),
+                exercises = null
             )
         )
         binding.etAddWorkout.text.clear()
@@ -103,7 +105,8 @@ class WorkoutsActivity : Fragment() {
         viewModel.updateWorkout(
             Workouts(
                 id = workouts.id,
-                title = newTitle
+                title = newTitle,
+                exercises = workouts.exercises
             )
         )
     }

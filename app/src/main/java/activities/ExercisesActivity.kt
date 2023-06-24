@@ -22,9 +22,12 @@ import com.example.trackingapp.databinding.FragmentExercisesBinding
 import com.google.android.material.snackbar.Snackbar
 import data.Exercises
 import data.TrackingAppDatabase
+import data.Workouts
 import utils.Utils.hideKeyboard
 import viewmodels.ExercisesViewModel
 import viewmodels.ExercisesViewModelFactory
+import viewmodels.WorkoutsViewModel
+import viewmodels.WorkoutsViewModelFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -37,6 +40,7 @@ class ExercisesActivity : Fragment() {
     val binding get() = _binding!!
 
     private lateinit var viewModel: ExercisesViewModel
+    private lateinit var workoutsViewModel: WorkoutsViewModel
     private lateinit var adapter: ExercisesAdapter
 
     override fun onCreateView(
@@ -45,9 +49,14 @@ class ExercisesActivity : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
+
         val dao = TrackingAppDatabase.getInstance(requireActivity().application).exercisesDao()
-        val factory = ExercisesViewModelFactory(dao, args.workoutId)
-        viewModel = ViewModelProvider(this, factory).get(ExercisesViewModel::class.java)
+        val exercisesFactory = ExercisesViewModelFactory(dao, args.workoutId)
+        viewModel = ViewModelProvider(this, exercisesFactory).get(ExercisesViewModel::class.java)
+
+        val workoutsDao = TrackingAppDatabase.getInstance(requireActivity().application).workoutsDao()
+        val workoutsFactory = WorkoutsViewModelFactory(workoutsDao, args.workoutId)
+        workoutsViewModel = ViewModelProvider(this, workoutsFactory).get(WorkoutsViewModel::class.java)
 
         initRecyclerView()
 
@@ -84,29 +93,40 @@ class ExercisesActivity : Fragment() {
     }
 
     private fun saveExerciseData() {
+        val workouts = workoutsViewModel.getWorkout(args.workoutId)
+
         val title = binding.etAddExercise.text.toString()
+
         val existingExercise = viewModel.getExerciseByTitle(title)
+        // if exercise already exists...
         if (existingExercise != null) {
-            // add current workoutID to exercise_includedInWorkoutIDs if not already in
-            if (!existingExercise.includedInWorkoutIDs.contains(args.workoutId)) {
-                var newIncludedInWorkoutIDs =  existingExercise.includedInWorkoutIDs.toMutableList()
-                newIncludedInWorkoutIDs.add(args.workoutId)
-                updateExercise(
-                    exercises = existingExercise,
-                    newTitle = existingExercise.title,
-                    newIncludedInWorkoutIDs = newIncludedInWorkoutIDs
-                )
-            }
-        }
-        else {
-            viewModel.insertExercise(
-                Exercises(
-                    id = 0,
-                    title = title,
-                    includedInWorkoutIDs = listOf<Int>(args.workoutId)
-                )
+            updateExercise(
+                exercises = existingExercise,
+                newTitle = existingExercise.title
             )
         }
+        // case: exercise is new
+        else {
+            // add exercise to exercise data-table
+            val exercise = Exercises(
+                id = 0,
+                title = title,
+            )
+            viewModel.insertExercise(exercise)
+        }
+
+        // add exercise to workout
+        workouts.exercises
+
+
+        workoutsViewModel.updateWorkout(
+            Workouts(
+                id = workouts.id,
+                title = workouts.title,
+                exercises = workoutsViewModel.exercisesByWorkoutId
+            )
+        )
+
         binding.etAddExercise.text.clear()
         requireActivity().hideKeyboard()
     }
@@ -117,14 +137,12 @@ class ExercisesActivity : Fragment() {
 
     private fun updateExercise(
         exercises: Exercises,
-        newTitle: String = exercises.title,
-        newIncludedInWorkoutIDs: List<Int> = exercises.includedInWorkoutIDs
+        newTitle: String = exercises.title
     ) {
         viewModel.updateExercise(
             Exercises(
                 id = exercises.id,
-                title = newTitle,
-                includedInWorkoutIDs = newIncludedInWorkoutIDs
+                title = newTitle
             )
         )
     }
@@ -134,11 +152,10 @@ class ExercisesActivity : Fragment() {
         binding.rvExercises.adapter = adapter
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
 
-        // display workouts list
-        viewModel.exercisesByWorkoutIDs.observe(viewLifecycleOwner, {
-            adapter.setList(it)
-            adapter.notifyDataSetChanged()
-        })
+//        workoutsViewModel.exercisesByWorkoutId.observe(viewLifecycleOwner, {
+//            adapter.setList(it)
+//            adapter.notifyDataSetChanged()
+//        })
     }
 
     private fun singleExercisePopupMenu(btnView: View, exercises: Exercises) {

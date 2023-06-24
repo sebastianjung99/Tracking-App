@@ -12,15 +12,5 @@ data class Exercises (
     @ColumnInfo(name = "exercise_id")
     val id: Int,
     @ColumnInfo(name = "exercise_title")
-    val title: String,
-    @ColumnInfo(name = "exercise_includedInWorkoutIDs")
-    val includedInWorkoutIDs: List<Int>
+    val title: String
 )
-
-class Converters {
-    @TypeConverter
-    fun listToJson(value: List<Int>?) = Gson().toJson(value)
-
-    @TypeConverter
-    fun jsonToList(value: String) = Gson().fromJson(value, Array<Int>::class.java).toList()
-}

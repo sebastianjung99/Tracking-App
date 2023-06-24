@@ -20,9 +20,6 @@ interface ExercisesDao {
     @Query("SELECT * FROM exercises_data_table WHERE exercise_title = :exerciseTitle")
     fun getExerciseByTitle(exerciseTitle: String): Exercises?
 
-    @Query("SELECT * FROM exercises_data_table WHERE exercise_includedInWorkoutIDs LIKE '%' || :workoutID || '%'")
-    fun getAllExercisesByWorkoutId(workoutID: Int): LiveData<List<Exercises>>
-
     @Query("SELECT * FROM exercises_data_table")
     fun getAllExercises(): LiveData<List<Exercises>>
 

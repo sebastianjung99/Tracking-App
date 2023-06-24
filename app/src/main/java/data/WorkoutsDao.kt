@@ -14,8 +14,14 @@ interface WorkoutsDao {
     @Update
     suspend fun updateWorkout(workouts: Workouts)
 
-    @Query("DELETE FROM workouts_data_table WHERE workout_id = :workouts_id")
-    suspend fun deleteWorkout(workouts_id: Int)
+    @Query("DELETE FROM workouts_data_table WHERE workout_id = :workoutId")
+    suspend fun deleteWorkout(workoutId: Int)
+
+    @Query("SELECT * FROM workouts_data_table WHERE workout_id = :workoutId")
+    fun getWorkout(workoutId: Int): Workouts
+
+    @Query("SELECT workout_exerciseList FROM workouts_data_table WHERE workout_id = :workoutId")
+    fun getExercisesByWorkoutId(workoutId: Int): Exercises
 
     @Query("SELECT * FROM workouts_data_table")
     fun getAllWorkouts():LiveData<List<Workouts>>

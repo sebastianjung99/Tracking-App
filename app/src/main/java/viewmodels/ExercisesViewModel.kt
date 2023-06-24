@@ -1,5 +1,6 @@
 package viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.Exercises
@@ -11,7 +12,6 @@ class ExercisesViewModel(
     private val workoutId: Int
 ): ViewModel() {
     val exercises = dao.getAllExercises()
-    val exercisesByWorkoutIDs = dao.getAllExercisesByWorkoutId(workoutId)
 
     fun insertExercise(exercises: Exercises) = viewModelScope.launch {
         dao.insertExercise(exercises)
