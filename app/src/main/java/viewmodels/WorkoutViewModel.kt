@@ -59,6 +59,10 @@ class WorkoutViewModel(
         dao.insertWorkoutExerciseCrossRef(crossRef)
     }
 
+    fun deleteWorkoutExerciseCrossRef(workoutId: Int, exerciseId: Int) = viewModelScope.launch {
+        dao.deleteWorkoutExerciseCrossRef(workoutId, exerciseId)
+    }
+
     fun getWorkoutsOfExercise(exerciseId: Int): LiveData<ExerciseWithWorkouts> {
         return dao.getWorkoutsOfExercise(exerciseId)
     }

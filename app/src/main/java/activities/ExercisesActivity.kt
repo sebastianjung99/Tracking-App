@@ -51,7 +51,7 @@ class ExercisesActivity : Fragment() {
 
         val workoutDao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
         val workoutFactory = WorkoutViewModelFactory(workoutDao, args.workoutId)
-        this.viewModel = ViewModelProvider(this, workoutFactory).get(WorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(this, workoutFactory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
 
@@ -90,14 +90,14 @@ class ExercisesActivity : Fragment() {
     private fun saveExerciseData() {
         val title = binding.etAddExercise.text.toString()
         lifecycleScope.launch {
-            val exerciseId = this@ExercisesActivity.viewModel.insertExercise(
+            val exerciseId = viewModel.insertExercise(
                 Exercise(
                     exerciseId = 0,
                     exerciseTitle = title
                 )
             )
 
-            this@ExercisesActivity.viewModel.insertWorkoutExerciseCrossRef(
+            viewModel.insertWorkoutExerciseCrossRef(
                 WorkoutExerciseCrossRef(
                     workout_id = args.workoutId,
                     exercise_id = exerciseId.toInt()
@@ -105,6 +105,7 @@ class ExercisesActivity : Fragment() {
             )
         }
 
+        // TODO: check if exercise already exists, maybe something like this?:
 //        val existingExercise = exerciseViewModel.getExerciseByTitle(title)
 //        if (existingExercise != null) {
 //            // add current workoutID to exercise_includedInWorkoutIDs if not already in
@@ -132,15 +133,19 @@ class ExercisesActivity : Fragment() {
         requireActivity().hideKeyboard()
     }
 
-    private fun deleteExercise(exercises_id: Int) {
-        this.viewModel.deleteExercise(exercises_id)
+    private fun deleteExercise(workoutId: Int, exerciseId: Int) {
+        viewModel.deleteExercise(exerciseId)
+        viewModel.deleteWorkoutExerciseCrossRef(
+            workoutId = workoutId,
+            exerciseId = exerciseId
+        )
     }
 
     private fun updateExercise(
         exercise: Exercise,
         newTitle: String = exercise.exerciseTitle
     ) {
-        this.viewModel.updateExercise(
+        viewModel.updateExercise(
             Exercise(
                 exerciseId = exercise.exerciseId,
                 exerciseTitle = newTitle
@@ -154,7 +159,7 @@ class ExercisesActivity : Fragment() {
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.option_delete -> {
-                    deleteExercise(exercise.exerciseId)
+                    deleteExercise(workoutId = args.workoutId, exerciseId = exercise.exerciseId)
                     true
                 }
                 R.id.option_edit -> {
@@ -244,7 +249,7 @@ class ExercisesActivity : Fragment() {
         binding.rvExercises.adapter = adapter
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
 
-        this.viewModel.exercisesOfWorkout.observe(viewLifecycleOwner) {
+        viewModel.exercisesOfWorkout.observe(viewLifecycleOwner) {
             adapter.setList(it.exercises)
             adapter.notifyDataSetChanged()
         }

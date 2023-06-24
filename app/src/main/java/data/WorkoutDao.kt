@@ -51,6 +51,9 @@ interface WorkoutDao {
     @Insert
     suspend fun insertWorkoutExerciseCrossRef(crossRef: WorkoutExerciseCrossRef)
 
+    @Query("DELETE FROM WorkoutExerciseCrossRef WHERE workout_id = :workoutId AND exercise_id = :exerciseId")
+    suspend fun deleteWorkoutExerciseCrossRef(workoutId: Int, exerciseId: Int)
+
     @Query("SELECT * FROM exercises_data_table WHERE exercise_id = :exerciseId")
     fun getWorkoutsOfExercise(exerciseId: Int): LiveData<ExerciseWithWorkouts>
 
