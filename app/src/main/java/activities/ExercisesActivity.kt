@@ -127,7 +127,7 @@ class ExercisesActivity : Fragment() {
     }
 
     private fun deleteExercise(workoutId: Int, exerciseId: Int) {
-        viewModel.deleteExercise(exerciseId)
+//        viewModel.deleteExercise(exerciseId)
         viewModel.deleteWorkoutExerciseCrossRef(
             workoutId = workoutId,
             exerciseId = exerciseId
