@@ -10,12 +10,14 @@ import data.relations.WorkoutExerciseCrossRef
     entities = [
         Workout::class,
         Exercise::class,
-        WorkoutExerciseCrossRef::class
+        WorkoutExerciseCrossRef::class,
+        WeightTrackingRecord::class
     ],
     version = 1
 )
 abstract class TrackingAppDatabase: RoomDatabase() {
     abstract fun workoutDao(): WorkoutDao
+    abstract fun bodyMetricsDao(): BodyMetricsDao
 
     companion object {
         @Volatile
