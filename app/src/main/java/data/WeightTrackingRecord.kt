@@ -18,7 +18,7 @@ data class WeightTrackingRecord(
     val weightYear: Int,
 
     @ColumnInfo(name = "weight_weight")
-    val weightWeight: Float,
+    val weightWeight: Double,
     @ColumnInfo(name = "weight_bodyfat")
-    val weightBodyFat: Float
+    val weightBodyFat: Double
 )
