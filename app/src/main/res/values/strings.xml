@@ -12,6 +12,7 @@
     <string name="Edit">Edit</string>
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
+    <string name="kg">kg</string>
 
     <string name="NewWorkoutEmptyEditTextPrompt">Please enter the workout title.</string>
     <string name="AddExerciseEmptyEditTextPrompt">Please enter the exercise title.</string>
@@ -25,9 +26,11 @@
     <string name="RemoveSet">Remove Set</string>
     <string name="AddSet">Add Set</string>
     <string name="ExerciseUpdated">Exercise Updated!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="Bodyfat">Bodyfat</string>
+    <string name="Bodyfat">Body fat</string>
     <string name="BodyFatPercentage">% Body Fat</string>
     <string name="AddWeightMeasurement">Add Weight Measurement</string>
+    <string name="Ratio">Ratio</string>
+
+    <string name="kgPlaceholder">%1$.2f kg</string>
+    <string name="percentSignPlaceholder">%1$.2f %%</string>
 </resources>
