@@ -13,6 +13,7 @@
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
     <string name="kg">kg</string>
+    <string name="Date">Date</string>
 
     <string name="NewWorkoutEmptyEditTextPrompt">Please enter the workout title.</string>
     <string name="AddExerciseEmptyEditTextPrompt">Please enter the exercise title.</string>

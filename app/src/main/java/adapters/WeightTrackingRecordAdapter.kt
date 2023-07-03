@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.ItemWeightTrackingRecordBinding
 import data.WeightTrackingRecord
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 class WeightTrackingRecordAdapter(
@@ -21,16 +23,21 @@ class WeightTrackingRecordAdapter(
 
     override fun onBindViewHolder(holder: WeightTrackingRecordViewHolder, position: Int) {
         holder.binding.apply {
-            var weight = weightTrackingRecordList[position].weightWeight
-            var bodyFat = weightTrackingRecordList[position].weightBodyFat
+
+            val date = LocalDate.of(
+                weightTrackingRecordList[position].weightYear,
+                weightTrackingRecordList[position].weightMonth,
+                weightTrackingRecordList[position].weightDay
+                ).format(DateTimeFormatter.ofPattern("dd. MMM"))
+
+            val weight = weightTrackingRecordList[position].weightWeight
+            val bodyFat = weightTrackingRecordList[position].weightBodyFat
             var ratio = weight / bodyFat
 
             // round to 2 decimals
-//            weight = (weight * 100.0).roundToInt() / 100.0
-//            bodyFat = (bodyFat * 100.0).roundToInt() / 100.0
             ratio = (ratio * 100.0).roundToInt() / 100.0
 
-//            tvWeightTrackingRecordWeight.text = "${weight.toString()} ${R.string.kg}"
+            tvWeightTrackingRecordDate.text = date.toString()
             tvWeightTrackingRecordWeight.text = holder.itemView.context.getString(R.string.kgPlaceholder, weight)
             tvWeightTrackingRecordBodyFat.text =  holder.itemView.context.getString(R.string.percentSignPlaceholder, bodyFat)
             tvWeightTrackingRecordRatio.text = ratio.toString()
