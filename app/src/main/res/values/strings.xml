@@ -35,4 +35,7 @@
 
     <string name="kgPlaceholder">%1$.2f kg</string>
     <string name="percentSignPlaceholder">%1$.2f %%</string>
+    <string name="SaveSet">Save Set</string>
+    <string name="SaveSets">Save Sets</string>
+    <string name="ExerciseTitle">Exercise Title</string>
 </resources>
