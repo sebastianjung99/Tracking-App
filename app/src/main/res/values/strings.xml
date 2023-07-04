@@ -21,6 +21,7 @@
     <string name="WorkoutUpdated">Workout Updated</string>
     <string name="WorkoutTitleCannotBeEmpty">Workout Title cannot be empty!</string>
     <string name="WorkoutTitle">Workout Title</string>
+    <string name="ExerciseOptions">Exercise Options</string>
     <string name="ExerciseName">Exercise Name</string>
     <string name="NewExercise">New Exercise</string>
     <string name="SetNumber">Set Number</string>
