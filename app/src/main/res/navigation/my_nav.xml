@@ -42,5 +42,9 @@
         android:id="@+id/singleExercise"
         android:name="activities.SingleExerciseActivity"
         android:label="fragment_single_exercise"
-        tools:layout="@layout/fragment_single_exercise" />
+        tools:layout="@layout/fragment_single_exercise" >
+        <argument
+            android:name="exerciseId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

@@ -94,7 +94,6 @@ class WorkoutsActivity : Fragment() {
         requireActivity().hideKeyboard()
     }
 
-    // TODO: remove workoutID from exercise_includedInWorkoutIDs
     private fun deleteWorkoutData(workouts_id: Int) {
         viewModel.deleteWorkout(workouts_id)
     }

@@ -11,9 +11,6 @@ class BodyMetricsViewModel(
 ): ViewModel() {
     val weightTrackingRecords = dao.getAllWeightTrackingRecords()
 
-    /*********************************************/
-    /**********         WORKOUT         **********/
-    /*********************************************/
     fun insertWeightTrackingRecord(weightTrackingRecord: WeightTrackingRecord) = viewModelScope.launch {
         dao.insertWeightTrackingRecord(weightTrackingRecord)
     }
