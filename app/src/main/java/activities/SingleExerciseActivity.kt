@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.trackingapp.databinding.FragmentSingleExerciseBinding
 
 /**
  * A simple [Fragment] subclass.
  */
 class SingleExerciseActivity: Fragment() {
+
+    val args: SingleExerciseActivityArgs by navArgs()
+
     var _binding: FragmentSingleExerciseBinding? = null
     val binding get() = _binding!!
 

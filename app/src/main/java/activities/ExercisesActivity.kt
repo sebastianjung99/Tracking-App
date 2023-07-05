@@ -59,7 +59,8 @@ class ExercisesActivity : Fragment() {
             override fun onItemClick(position: Int, view: View, exercise: Exercise) {
                 when (view.id) {
                     binding.root.id -> {
-                        findNavController().navigate(R.id.action_exercises_to_singleExercise)
+                        val action = ExercisesActivityDirections.actionExercisesToSingleExercise(exercise.exerciseId)
+                        findNavController().navigate(action)
                     }
                     R.id.btnEditExercise -> {
                         singleExercisePopupMenu(view, exercise)
