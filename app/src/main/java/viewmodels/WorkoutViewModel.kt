@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.Exercise
+import data.ExerciseSet
 import data.Workout
 import data.WorkoutDao
 import data.relations.ExerciseWithWorkouts
@@ -53,6 +54,25 @@ class WorkoutViewModel(
     fun getExerciseByTitle(exerciseTitle: String): Exercise {
         return dao.getExerciseByTitle(exerciseTitle)
     }
+
+
+
+    /*********************************************/
+    /**********       EXERCISE SET      **********/
+    /*********************************************/
+    fun insertExerciseSet(exerciseSet: ExerciseSet) = viewModelScope.launch {
+        dao.insertExerciseSet(exerciseSet)
+    }
+
+    fun deleteExerciseSet(exerciseSet_id: Int) = viewModelScope.launch {
+        dao.deleteExerciseSet(exerciseSet_id)
+    }
+
+    fun updateExerciseSet(exerciseSet: ExerciseSet) = viewModelScope.launch {
+        dao.updateExerciseSet(exerciseSet)
+    }
+
+    suspend fun getAllExerciseSets() = dao.getAllExerciseSets()
 
 
 

@@ -11,6 +11,7 @@ import data.relations.WorkoutExerciseCrossRef
         Workout::class,
         Exercise::class,
         WorkoutExerciseCrossRef::class,
+        ExerciseSet::class,
         WeightTrackingRecord::class
     ],
     version = 1

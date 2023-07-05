@@ -50,6 +50,23 @@ interface WorkoutDao {
 
 
     /*********************************************/
+    /**********       EXERCISE SET      **********/
+    /*********************************************/
+    @Insert
+    suspend fun insertExerciseSet(exerciseSet: ExerciseSet)
+
+    @Update
+    suspend fun updateExerciseSet(exerciseSet: ExerciseSet)
+
+    @Query("DELETE FROM exerciseSet_data_table WHERE exerciseSet_id = :exerciseSet_id")
+    suspend fun deleteExerciseSet(exerciseSet_id: Int)
+
+    @Query("SELECT * FROM exerciseSet_data_table")
+    fun getAllExerciseSets(): LiveData<List<ExerciseSet>>
+
+
+
+    /*********************************************/
     /**********         CROSSREF        **********/
     /*********************************************/
     @Insert(onConflict = OnConflictStrategy.IGNORE)
