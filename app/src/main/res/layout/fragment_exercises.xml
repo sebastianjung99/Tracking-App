@@ -8,39 +8,36 @@
     android:padding="10dp"
     tools:context="activities.WorkoutsActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+    <LinearLayout
+        android:id="@+id/layoutTitleOptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tvWorkoutTitle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="@string/WorkoutTitle"
             android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnExerciseOptions"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/btnExerciseOptions"
+            android:id="@+id/btnWorkoutOptions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/dots_vertical"
             android:background="#00FFFFFF"
-            android:contentDescription="@string/ExerciseOptions"
+            android:contentDescription="@string/WorkoutOptions"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:src="@drawable/dots_vertical" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvExercises"
@@ -49,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutTitleOptions" />
 
     <EditText
         android:id="@+id/etAddExercise"
