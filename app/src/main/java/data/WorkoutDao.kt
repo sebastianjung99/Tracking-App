@@ -78,6 +78,16 @@ interface WorkoutDao {
         year: Int
     ): LiveData<List<ExerciseSet>>
 
+    @Query("SELECT exerciseSet_data_table.* FROM exerciseSet_data_table\n" +
+            "INNER JOIN WorkoutExerciseCrossRef ON exerciseSet_data_table.exerciseSet_exerciseId = " +
+            "WorkoutExerciseCrossRef.exercise_id\n" +
+            "WHERE workout_id = :workoutId AND exercise_id = :exerciseId\n" +
+            "ORDER BY exerciseSet_id DESC")
+    suspend fun getExerciseSetsByExerciseWorkout(
+        exerciseId: Int,
+        workoutId: Int
+    ): List<ExerciseSet>
+
 
 
     /*********************************************/

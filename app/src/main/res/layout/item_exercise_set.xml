@@ -3,54 +3,72 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp">
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvExerciseSetNumber"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="#"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="3"
-        app:layout_constraintEnd_toStartOf="@+id/btnRemoveExerciseSet"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintStart_toEndOf="@+id/tvExerciseSetNumber"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tvExerciseSetNumber"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/SetNumber" />
 
         <EditText
             android:id="@+id/etExerciseSetWeight"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="18sp"
             android:gravity="center"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/etExerciseSetReps"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="18sp"
             android:gravity="center"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/btnRemoveExerciseSet"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/RemoveSet"
-        android:scaleType="centerCrop"
-        android:src="@drawable/remove_48px"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal">
+
+        <ImageButton
+            android:id="@+id/btnRemoveExerciseSet"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:adjustViewBounds="true"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/RemoveSet"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dots_vertical"/>
+
+    </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

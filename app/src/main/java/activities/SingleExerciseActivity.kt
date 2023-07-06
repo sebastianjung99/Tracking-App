@@ -1,5 +1,6 @@
 package activities
 
+import adapters.ExerciseHistoricSetAdapter
 import adapters.ExerciseSetAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,13 +9,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.databinding.FragmentSingleExerciseBinding
 import data.ExerciseSet
 import data.TrackingAppDatabase
+import kotlinx.coroutines.launch
 import viewmodels.WorkoutViewModel
 import viewmodels.WorkoutViewModelFactory
+import java.time.LocalDate
 
 /**
  * A simple [Fragment] subclass.
@@ -28,6 +32,8 @@ class SingleExerciseActivity: Fragment() {
 
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var currentSetsAdapter: ExerciseSetAdapter
+    private lateinit var historicSetsAdapter: ExerciseHistoricSetAdapter
+    // TODO: implement historic recyclerview
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +46,8 @@ class SingleExerciseActivity: Fragment() {
         viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
+
+        // TODO: implement onClickListener for the button on each recyclerView item (to show options like delete and add note)
 
         currentSetsAdapter.setOnItemFocusChangeListener(object: ExerciseSetAdapter.onItemFocusChangeListener {
             override fun onItemFocusChange(
@@ -58,18 +66,68 @@ class SingleExerciseActivity: Fragment() {
             }
         })
 
+        // TODO: remove save sets button
+        // TODO: implement add set button functionality
+
         return binding.root
     }
+
+    // TODO: save, delete and update ExerciseSet database entry
 
     private fun initRecyclerView() {
         currentSetsAdapter = ExerciseSetAdapter()
         binding.rvExerciseSets.adapter = currentSetsAdapter
         binding.rvExerciseSets.layoutManager = LinearLayoutManager(requireContext())
 
+        historicSetsAdapter = ExerciseHistoricSetAdapter()
+        binding.rvExerciseSetsHistoric.adapter = historicSetsAdapter
+        binding.rvExerciseSetsHistoric.layoutManager = LinearLayoutManager(requireContext())
+
         viewModel.setsOfExerciseOfWorkoutToday.observe(viewLifecycleOwner) {
             currentSetsAdapter.setList(it)
             currentSetsAdapter.notifyDataSetChanged()
         }
+
+
+        // get last sets
+        var historicSets = mutableListOf<ExerciseSet>()
+        lifecycleScope.launch {
+            val historicSetsAll = viewModel.getExerciseSetsByExerciseWorkout(args.exerciseId, args.workoutId)
+            val today = LocalDate.now()
+
+            for (i in historicSetsAll.indices) {
+                val setI = historicSetsAll[i]
+                var done = false
+                val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
+
+                // find first set that has been saved before today
+                if (date.isBefore(today)) {
+                    historicSets.add(setI)
+
+                    // since sets are sorted descending by id, higher id means more recent date
+                    // iterate from here and add all sets with same date to historicSets
+                    for (j in i + 1 until historicSetsAll.size) {
+                        val setJ = historicSetsAll[j]
+                        if (
+                            setJ.weightDay == setI.weightDay
+                            && setJ.weightMonth == setI.weightMonth
+                            && setJ.weightYear == setI.weightYear
+                        ) {
+                            historicSets.add(setJ)
+                        // stop once date changes
+                        } else {
+                            done = true
+                            break
+                        }
+                    }
+                }
+                if (done) break
+            }
+
+            historicSetsAdapter.setList(historicSets.toList())
+            historicSetsAdapter.notifyDataSetChanged()
+        }
+
     }
 
 }
