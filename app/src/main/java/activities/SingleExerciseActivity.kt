@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import viewmodels.WorkoutViewModel
 import viewmodels.WorkoutViewModelFactory
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * A simple [Fragment] subclass.
@@ -103,6 +104,11 @@ class SingleExerciseActivity: Fragment() {
                 // find first set that has been saved before today
                 if (date.isBefore(today)) {
                     historicSets.add(setI)
+                    binding.tvHistoricSetDate.text = LocalDate.of(
+                        setI.weightYear,
+                        setI.weightMonth,
+                        setI.weightDay
+                    ).format(DateTimeFormatter.ofPattern("d. MMMM")).toString()
 
                     // since sets are sorted descending by id, higher id means more recent date
                     // iterate from here and add all sets with same date to historicSets
