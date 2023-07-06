@@ -11,13 +11,23 @@ import data.relations.ExerciseWithWorkouts
 import data.relations.WorkoutExerciseCrossRef
 import data.relations.WorkoutWithExercises
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class WorkoutViewModel(
     private val dao: WorkoutDao,
-    private val workoutId: Int
+    private val workoutId: Int,
+    private val exerciseId: Int
 ): ViewModel() {
     val workouts = dao.getAllWorkouts()
     var exercisesOfWorkout = dao.getExercisesOfWorkout(workoutId)
+
+    val setsOfExerciseOfWorkoutToday = dao.getExerciseSetsByExerciseWorkoutDate(
+        workoutId = workoutId,
+        exerciseId = exerciseId,
+        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+        month = Calendar.getInstance().get(Calendar.MONTH) + 1,
+        year = Calendar.getInstance().get(Calendar.YEAR)
+    )
 
 
 

@@ -9,6 +9,15 @@ data class ExerciseSet(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "exerciseSet_id")
     val exerciseSetId: Int,
+    @ColumnInfo(name = "exerciseSet_exerciseId")
+    val exerciseId: Int,
+
+    @ColumnInfo(name = "exerciseSet_setNumber")
+    val setNumber: Int,
+    @ColumnInfo(name = "exerciseSet_repetitions")
+    val repetitions: Int,
+    @ColumnInfo(name = "exerciseSet_weight")
+    val weight: Int,
 
     @ColumnInfo(name = "exerciseSet_day")
     val weightDay: Int,
@@ -16,11 +25,4 @@ data class ExerciseSet(
     val weightMonth: Int,
     @ColumnInfo(name = "exerciseSet_year")
     val weightYear: Int,
-
-    @ColumnInfo(name = "exerciseSet_setNumber")
-    val setNumber: Int,
-    @ColumnInfo(name = "exerciseSet_repetitions")
-    val repetitions: Int,
-    @ColumnInfo(name = "exerciseSet_weight")
-    val weight: Int
 )

@@ -45,7 +45,7 @@ class WorkoutsActivity : Fragment() {
         // Inflate the layout for this fragment
        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
         val dao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
-        val factory = WorkoutViewModelFactory(dao, 0)
+        val factory = WorkoutViewModelFactory(dao, 0, 0)
         viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()

@@ -52,17 +52,31 @@ interface WorkoutDao {
     /*********************************************/
     /**********       EXERCISE SET      **********/
     /*********************************************/
+    /* TODO: add position array to ExerciseSet.kt so we can have different sets for the same
+    exercise if exercise gets added to a workout multiple times */
     @Insert
     suspend fun insertExerciseSet(exerciseSet: ExerciseSet)
 
     @Update
     suspend fun updateExerciseSet(exerciseSet: ExerciseSet)
 
-    @Query("DELETE FROM exerciseSet_data_table WHERE exerciseSet_id = :exerciseSet_id")
-    suspend fun deleteExerciseSet(exerciseSet_id: Int)
+    @Query("DELETE FROM exerciseSet_data_table WHERE exerciseSet_id = :exerciseSetId")
+    suspend fun deleteExerciseSet(exerciseSetId: Int)
 
     @Query("SELECT * FROM exerciseSet_data_table")
     fun getAllExerciseSets(): LiveData<List<ExerciseSet>>
+
+    @Query("SELECT exerciseSet_data_table.* FROM exerciseSet_data_table\n" +
+            "INNER JOIN WorkoutExerciseCrossRef ON exerciseSet_exerciseId = exercise_id\n" +
+            "WHERE workout_id = :workoutId AND exercise_id = :exerciseId AND " +
+            "exerciseSet_day = :day AND exerciseSet_month = :month AND exerciseSet_year = :year")
+    fun getExerciseSetsByExerciseWorkoutDate(
+        exerciseId: Int,
+        workoutId: Int,
+        day: Int,
+        month: Int,
+        year: Int
+    ): LiveData<List<ExerciseSet>>
 
 
 

@@ -50,7 +50,7 @@ class ExercisesActivity : Fragment() {
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
 
         val workoutDao = TrackingAppDatabase.getInstance(requireActivity().application).workoutDao()
-        val workoutFactory = WorkoutViewModelFactory(workoutDao, args.workoutId)
+        val workoutFactory = WorkoutViewModelFactory(workoutDao, args.workoutId, 0)
         viewModel = ViewModelProvider(this, workoutFactory).get(WorkoutViewModel::class.java)
 
         initRecyclerView()
@@ -59,7 +59,10 @@ class ExercisesActivity : Fragment() {
             override fun onItemClick(position: Int, view: View, exercise: Exercise) {
                 when (view.id) {
                     binding.root.id -> {
-                        val action = ExercisesActivityDirections.actionExercisesToSingleExercise(exercise.exerciseId)
+                        val action = ExercisesActivityDirections.actionExercisesToSingleExercise(
+                            exerciseId = exercise.exerciseId,
+                            workoutId = args.workoutId
+                        )
                         findNavController().navigate(action)
                     }
                     R.id.btnEditExercise -> {
