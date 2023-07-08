@@ -34,7 +34,6 @@ class SingleExerciseActivity: Fragment() {
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var currentSetsAdapter: ExerciseSetAdapter
     private lateinit var historicSetsAdapter: ExerciseHistoricSetAdapter
-    // TODO: implement historic recyclerview
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,7 +129,10 @@ class SingleExerciseActivity: Fragment() {
                 if (done) break
             }
 
-            historicSetsAdapter.setList(historicSets.toList())
+            // reverse list since it's ordered by exerciseSet_id, but higher exerciseSet_id means
+            // higher exerciseSet_setNumber, and we want the list displayed by ascending setNumber,
+            // not descending
+            historicSetsAdapter.setList(historicSets.toList().asReversed())
             historicSetsAdapter.notifyDataSetChanged()
         }
 
