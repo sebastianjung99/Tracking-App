@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_workouts_to_exercises"
             app:destination="@id/exercises" />
+        <action
+            android:id="@+id/action_workouts_to_dataFragment"
+            app:destination="@id/data" />
     </fragment>
     <fragment
         android:id="@+id/weight"
@@ -50,4 +53,9 @@
             android:name="workoutId"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/data"
+        android:name="activities.DataActivity"
+        android:label="fragment_data"
+        tools:layout="@layout/fragment_data" />
 </navigation>
