@@ -10,4 +10,8 @@
         android:id="@+id/weight"
         android:title="@string/Weight"
         android:icon="@drawable/scale_bathroom"/>
+    <item
+        android:id="@+id/data"
+        android:title="@string/Data"
+        android:icon="@drawable/description_48px" />
 </menu>
