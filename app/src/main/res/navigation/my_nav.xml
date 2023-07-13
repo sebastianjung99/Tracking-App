@@ -11,24 +11,14 @@
         android:label="fragment_workouts"
         tools:layout="@layout/fragment_workouts" >
         <action
-            android:id="@+id/action_workouts_to_weight"
-            app:destination="@id/weight" />
-        <action
             android:id="@+id/action_workouts_to_exercises"
             app:destination="@id/exercises" />
-        <action
-            android:id="@+id/action_workouts_to_dataFragment"
-            app:destination="@id/data" />
     </fragment>
     <fragment
         android:id="@+id/weight"
         android:name="activities.WeightActivity"
         android:label="fragment_weight"
-        tools:layout="@layout/fragment_weight" >
-        <action
-            android:id="@+id/action_weight_to_workouts"
-            app:destination="@id/workouts" />
-    </fragment>
+        tools:layout="@layout/fragment_weight" />
     <fragment
         android:id="@+id/exercises"
         android:name="activities.ExercisesActivity"
@@ -40,6 +30,9 @@
         <argument
             android:name="workoutId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_exercises_to_workouts3"
+            app:destination="@id/workouts" />
     </fragment>
     <fragment
         android:id="@+id/singleExercise"
@@ -52,6 +45,9 @@
         <argument
             android:name="workoutId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_singleExercise_to_exercises4"
+            app:destination="@id/exercises" />
     </fragment>
     <fragment
         android:id="@+id/data"
