@@ -72,6 +72,10 @@ class ExercisesActivity : Fragment() {
             }
         })
 
+        binding.btnExercisesBack.setOnClickListener {
+            findNavController().navigate(ExercisesActivityDirections.actionExercisesToWorkouts())
+        }
+
         binding.btnAddExercise.setOnClickListener {
             val title: String = binding.etAddExercise.text.toString()
             if (title.trim().isEmpty()) {

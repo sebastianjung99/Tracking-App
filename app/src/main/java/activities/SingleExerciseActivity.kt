@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.databinding.FragmentSingleExerciseBinding
@@ -48,6 +49,10 @@ class SingleExerciseActivity: Fragment() {
         initRecyclerView()
 
         // TODO: implement onClickListener for the button on each recyclerView item (to show options like delete and add note)
+
+        binding.btnSingleExerciseBack.setOnClickListener {
+            findNavController().navigate(SingleExerciseActivityDirections.actionSingleExerciseToExercises(args.workoutId))
+        }
 
         currentSetsAdapter.setOnItemFocusChangeListener(object: ExerciseSetAdapter.onItemFocusChangeListener {
             override fun onItemFocusChange(
