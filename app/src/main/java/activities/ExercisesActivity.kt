@@ -53,6 +53,11 @@ class ExercisesActivity : Fragment() {
         val workoutFactory = WorkoutViewModelFactory(workoutDao, args.workoutId, 0)
         viewModel = ViewModelProvider(this, workoutFactory).get(WorkoutViewModel::class.java)
 
+        // set workout title
+        lifecycleScope.launch {
+            binding.tvWorkoutTitle.text = viewModel.getWorkoutTitleById(args.workoutId)
+        }
+
         initRecyclerView()
 
         adapter.setOnItemClickListener(object : ExercisesAdapter.onItemClickListener {

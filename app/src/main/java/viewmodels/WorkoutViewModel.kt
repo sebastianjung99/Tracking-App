@@ -89,6 +89,8 @@ class WorkoutViewModel(
         workoutId: Int
     ): List<ExerciseSet> = dao.getExerciseSetsByExerciseWorkout(exerciseId, workoutId)
 
+    suspend fun getWorkoutTitleById(workout_id: Int) = dao.getWorkoutTitleById(workout_id)
+
 
 
 
