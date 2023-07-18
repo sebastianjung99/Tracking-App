@@ -46,6 +46,11 @@ class SingleExerciseActivity: Fragment() {
         val factory = WorkoutViewModelFactory(dao, args.workoutId, args.exerciseId)
         viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
+        // set workout title
+        lifecycleScope.launch {
+            binding.tvExerciseTitle.text = viewModel.getExerciseTitleById(args.exerciseId)
+        }
+
         initRecyclerView()
 
         // TODO: implement onClickListener for the button on each recyclerView item (to show options like delete and add note)

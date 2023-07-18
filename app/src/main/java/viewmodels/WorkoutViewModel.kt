@@ -46,6 +46,8 @@ class WorkoutViewModel(
         dao.updateWorkout(workout)
     }
 
+    suspend fun getWorkoutTitleById(workout_id: Int) = dao.getWorkoutTitleById(workout_id)
+
 
 
     /*********************************************/
@@ -64,6 +66,8 @@ class WorkoutViewModel(
     fun getExerciseByTitle(exerciseTitle: String): Exercise {
         return dao.getExerciseByTitle(exerciseTitle)
     }
+
+    suspend fun getExerciseTitleById(exercise_id: Int) = dao.getExerciseTitleById(exercise_id)
 
 
 
@@ -88,8 +92,6 @@ class WorkoutViewModel(
         exerciseId: Int,
         workoutId: Int
     ): List<ExerciseSet> = dao.getExerciseSetsByExerciseWorkout(exerciseId, workoutId)
-
-    suspend fun getWorkoutTitleById(workout_id: Int) = dao.getWorkoutTitleById(workout_id)
 
 
 

@@ -51,6 +51,9 @@ interface WorkoutDao {
     @Query("SELECT * FROM exercises_data_table WHERE exercise_title = :exerciseTitle")
     fun getExerciseByTitle(exerciseTitle: String): Exercise
 
+    @Query("SELECT exercise_title FROM exercises_data_table WHERE exercise_id = :exerciseId")
+    fun getExerciseTitleById(exerciseId: Int): String
+
 
 
     /*********************************************/
