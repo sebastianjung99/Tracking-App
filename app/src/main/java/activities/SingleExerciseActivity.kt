@@ -119,6 +119,8 @@ class SingleExerciseActivity: Fragment() {
         viewModel.setsOfExerciseOfWorkoutToday.observe(viewLifecycleOwner) {
             currentSetsAdapter.setList(it)
             currentSetsAdapter.notifyDataSetChanged()
+            // auto scroll to end of list on change
+            binding.rvExerciseSets.scrollToPosition(currentSetsAdapter.itemCount - 1)
         }
 
 
