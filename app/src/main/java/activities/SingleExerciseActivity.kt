@@ -21,6 +21,7 @@ import viewmodels.WorkoutViewModel
 import viewmodels.WorkoutViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 /**
  * A simple [Fragment] subclass.
@@ -35,6 +36,8 @@ class SingleExerciseActivity: Fragment() {
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var currentSetsAdapter: ExerciseSetAdapter
     private lateinit var historicSetsAdapter: ExerciseHistoricSetAdapter
+
+    private var setNumber = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +62,10 @@ class SingleExerciseActivity: Fragment() {
             findNavController().navigate(SingleExerciseActivityDirections.actionSingleExerciseToExercises(args.workoutId))
         }
 
+        binding.btnAddSet.setOnClickListener {
+            saveExerciseSet()
+        }
+
         currentSetsAdapter.setOnItemFocusChangeListener(object: ExerciseSetAdapter.onItemFocusChangeListener {
             override fun onItemFocusChange(
                 position: Int,
@@ -77,12 +84,28 @@ class SingleExerciseActivity: Fragment() {
         })
 
         // TODO: remove save sets button
-        // TODO: implement add set button functionality
 
         return binding.root
     }
 
     // TODO: save, delete and update ExerciseSet database entry
+    private fun saveExerciseSet() {
+        lifecycleScope.launch {
+            val today = Calendar.getInstance()
+            viewModel.insertExerciseSet(
+                ExerciseSet(
+                    exerciseSetId = 0,
+                    exerciseId = args.exerciseId,
+                    setNumber = setNumber++,
+                    repetitions = 10,
+                    weight = 20,
+                    weightDay = today.get(Calendar.DAY_OF_MONTH),
+                    weightMonth = today.get(Calendar.MONTH) + 1,
+                    weightYear = today.get(Calendar.YEAR)
+                )
+            )
+        }
+    }
 
     private fun initRecyclerView() {
         currentSetsAdapter = ExerciseSetAdapter()
@@ -110,8 +133,11 @@ class SingleExerciseActivity: Fragment() {
                 var done = false
                 val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
 
+                if (date.isEqual(today)) {
+                    setNumber++
+                }
                 // find first set that has been saved before today
-                if (date.isBefore(today)) {
+                else if (date.isBefore(today)) {
                     historicSets.add(setI)
                     binding.tvHistoricSetDate.text = LocalDate.of(
                         setI.weightYear,
