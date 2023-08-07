@@ -13,20 +13,33 @@ class ExerciseSetAdapter(): RecyclerView.Adapter<ExerciseSetAdapter.SingleExerci
 
     private lateinit var mListener : onItemFocusChangeListener
     interface onItemFocusChangeListener {
-        fun onItemFocusChange(position: Int,
-              view: View,
-              hasFocus: Boolean,
-              exerciseSet: ExerciseSet
+        fun onItemFocusChange(
+            position: Int,
+            view: View,
+            hasFocus: Boolean,
+            exerciseSet: ExerciseSet
         )
     }
     fun setOnItemFocusChangeListener(listener: onItemFocusChangeListener) {
         mListener = listener
     }
 
+    private lateinit var cListener: onItemClickListener
+    interface  onItemClickListener {
+        fun onItemClick(
+            position: Int,
+            view: View,
+            exerciseSet: ExerciseSet
+        )
+    }
+    fun setOnItemClickListener(listener: onItemClickListener) {
+        cListener = listener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleExerciseViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemExerciseSetBinding.inflate(layoutInflater, parent, false)
-        return SingleExerciseViewHolder(binding, mListener)
+        return SingleExerciseViewHolder(binding, mListener, cListener)
     }
 
     override fun onBindViewHolder(holder: SingleExerciseViewHolder, position: Int) {
@@ -48,11 +61,12 @@ class ExerciseSetAdapter(): RecyclerView.Adapter<ExerciseSetAdapter.SingleExerci
 
     inner class SingleExerciseViewHolder(
         val binding: ItemExerciseSetBinding,
-        listener: onItemFocusChangeListener
+        mListener: onItemFocusChangeListener,
+        cListener: onItemClickListener
     ): RecyclerView.ViewHolder(binding.root) {
         init {
             binding.etExerciseSetReps.setOnFocusChangeListener { view, hasFocus ->
-                listener.onItemFocusChange(
+                mListener.onItemFocusChange(
                     bindingAdapterPosition,
                     view,
                     hasFocus,
@@ -60,10 +74,17 @@ class ExerciseSetAdapter(): RecyclerView.Adapter<ExerciseSetAdapter.SingleExerci
                 )
             }
             binding.etExerciseSetWeight.setOnFocusChangeListener { view, hasFocus ->
-                listener.onItemFocusChange(
+                mListener.onItemFocusChange(
                     bindingAdapterPosition,
                     view,
                     hasFocus,
+                    exerciseSetList[bindingAdapterPosition]
+                )
+            }
+            binding.btnEditCurrentExerciseSet.setOnClickListener {
+                cListener.onItemClick(
+                    bindingAdapterPosition,
+                    it,
                     exerciseSetList[bindingAdapterPosition]
                 )
             }

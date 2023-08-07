@@ -40,4 +40,6 @@
     <string name="ExerciseTitle">Exercise Title</string>
     <string name="Data">Data</string>
     <string name="Back">Back</string>
+    <string name="AddDropset">Add Dropset</string>
+    <string name="AddNote">Add Note</string>
 </resources>

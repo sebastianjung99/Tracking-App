@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentSingleExerciseBinding
 import data.ExerciseSet
 import data.TrackingAppDatabase
@@ -56,8 +58,6 @@ class SingleExerciseActivity: Fragment() {
 
         initRecyclerView()
 
-        // TODO: implement onClickListener for the button on each recyclerView item (to show options like delete and add note)
-
         binding.btnSingleExerciseBack.setOnClickListener {
             findNavController().navigate(SingleExerciseActivityDirections.actionSingleExerciseToExercises(args.workoutId))
         }
@@ -65,6 +65,13 @@ class SingleExerciseActivity: Fragment() {
         binding.btnAddSet.setOnClickListener {
             saveExerciseSet()
         }
+
+        // TODO: implement onClickListener for the button on each recyclerView item (to show options like delete and add note)
+        currentSetsAdapter.setOnItemClickListener(object: ExerciseSetAdapter.onItemClickListener {
+            override fun onItemClick(position: Int, view: View, exerciseSet: ExerciseSet) {
+                singleExerciseSetPopUpMenu(view, exerciseSet)
+            }
+        })
 
         currentSetsAdapter.setOnItemFocusChangeListener(object: ExerciseSetAdapter.onItemFocusChangeListener {
             override fun onItemFocusChange(
@@ -105,6 +112,29 @@ class SingleExerciseActivity: Fragment() {
                 )
             )
         }
+    }
+
+    private fun singleExerciseSetPopUpMenu(btnView: View, exerciseSet: ExerciseSet) {
+        val popup = PopupMenu(binding.root.context, btnView)
+        popup.menuInflater.inflate(R.menu.exerciseset_menu, popup.menu)
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.option_addDropset -> {
+                    // TODO: implement addDropset functionality
+                    true
+                }
+                R.id.option_addNote -> {
+                    // TODO: implement addNote functionality
+                    true
+                }
+                R.id.option_delete -> {
+                    // TODO: implement delete functionality
+                    true
+                }
+                else -> true
+            }
+        }
+        popup.show()
     }
 
     private fun initRecyclerView() {

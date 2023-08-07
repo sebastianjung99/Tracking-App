@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/option_addDropset"
+        android:title="@string/AddDropset" />
+    <item
+        android:id="@+id/option_addNote"
+        android:title="@string/AddNote" />
+    <item
+        android:id="@+id/option_delete"
+        android:title="@string/Delete" />
+</menu>
