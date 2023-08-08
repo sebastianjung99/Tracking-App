@@ -90,7 +90,7 @@ interface WorkoutDao {
             "WorkoutExerciseCrossRef.exercise_id\n" +
             "WHERE workout_id = :workoutId AND exercise_id = :exerciseId\n" +
             "ORDER BY exerciseSet_id DESC")
-    suspend fun getExerciseSetsByExerciseWorkout(
+    fun getExerciseSetsByExerciseWorkout(
         exerciseId: Int,
         workoutId: Int
     ): List<ExerciseSet>

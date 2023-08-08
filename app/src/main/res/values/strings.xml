@@ -42,4 +42,6 @@
     <string name="Back">Back</string>
     <string name="AddDropset">Add Dropset</string>
     <string name="AddNote">Add Note</string>
+    <string name="ConfirmDeleteSetTitle">Delete Set?</string>
+    <string name="ConfirmDeleteSetText">Do you really want to delete this Set?</string>
 </resources>

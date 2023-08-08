@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentSingleExerciseBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import data.ExerciseSet
 import data.TrackingAppDatabase
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class SingleExerciseActivity: Fragment() {
     private lateinit var historicSetsAdapter: ExerciseHistoricSetAdapter
 
     private var setNumber = 1
+    private var exerciseSetsToday = mutableListOf<ExerciseSet>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,7 +68,6 @@ class SingleExerciseActivity: Fragment() {
             saveExerciseSet()
         }
 
-        // TODO: implement onClickListener for the button on each recyclerView item (to show options like delete and add note)
         currentSetsAdapter.setOnItemClickListener(object: ExerciseSetAdapter.onItemClickListener {
             override fun onItemClick(position: Int, view: View, exerciseSet: ExerciseSet) {
                 singleExerciseSetPopUpMenu(view, exerciseSet)
@@ -90,29 +91,48 @@ class SingleExerciseActivity: Fragment() {
             }
         })
 
-        // TODO: remove save sets button
-
         return binding.root
     }
 
-    // TODO: save, delete and update ExerciseSet database entry
     private fun saveExerciseSet() {
         lifecycleScope.launch {
             val today = Calendar.getInstance()
-            viewModel.insertExerciseSet(
-                ExerciseSet(
-                    exerciseSetId = 0,
-                    exerciseId = args.exerciseId,
-                    setNumber = setNumber++,
-                    repetitions = 10,
-                    weight = 20,
-                    weightDay = today.get(Calendar.DAY_OF_MONTH),
-                    weightMonth = today.get(Calendar.MONTH) + 1,
-                    weightYear = today.get(Calendar.YEAR)
-                )
+            val insertSet = ExerciseSet(
+                exerciseSetId = 0,
+                exerciseId = args.exerciseId,
+                setNumber = setNumber++,
+                repetitions = 10,
+                weight = 20,
+                weightDay = today.get(Calendar.DAY_OF_MONTH),
+                weightMonth = today.get(Calendar.MONTH) + 1,
+                weightYear = today.get(Calendar.YEAR)
             )
+            exerciseSetsToday.add(insertSet)
+            viewModel.insertExerciseSet(insertSet)
+        }
+
+    }
+
+    private fun deleteExerciseSet(exerciseSet: ExerciseSet) {
+        viewModel.deleteExerciseSet(exerciseSet.exerciseSetId)
+        getTodaysSets()
+        setNumber--
+
+        // update set numbers for sets after deleted one
+        for (i in 0 until exerciseSetsToday.size - 1) {
+            val currentSet = exerciseSetsToday[i]
+            if (currentSet.setNumber > exerciseSet.setNumber) {
+                val newSet = currentSet.copy(setNumber = exerciseSetsToday[i].setNumber - 1)
+                updateExerciseSet(newSet)
+            }
         }
     }
+
+    private fun updateExerciseSet(exerciseSet: ExerciseSet) {
+        viewModel.updateExerciseSet(exerciseSet)
+        // getTodaysSets()
+    }
+
 
     private fun singleExerciseSetPopUpMenu(btnView: View, exerciseSet: ExerciseSet) {
         val popup = PopupMenu(binding.root.context, btnView)
@@ -128,13 +148,41 @@ class SingleExerciseActivity: Fragment() {
                     true
                 }
                 R.id.option_delete -> {
-                    // TODO: implement delete functionality
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(resources.getString(R.string.ConfirmDeleteSetTitle))
+                        .setNegativeButton(resources.getString(R.string.Cancel)) { dialog, which ->
+                            // nothing
+                        }
+                        .setPositiveButton(resources.getString(R.string.Delete)) { dialog, which ->
+                            deleteExerciseSet(exerciseSet)
+                        }
+                        .show()
                     true
                 }
                 else -> true
             }
         }
         popup.show()
+    }
+
+    private fun getTodaysSets() {
+        setNumber = 1
+        exerciseSetsToday.clear()
+        // test
+        val historicSetsAll =
+            viewModel.getExerciseSetsByExerciseWorkout(args.exerciseId, args.workoutId)
+        val today = LocalDate.now()
+
+        for (i in historicSetsAll.indices) {
+            val setI = historicSetsAll[i]
+            val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
+
+            if (date.isEqual(today)) {
+                setNumber++
+                exerciseSetsToday.add(setI)
+            }
+            else break
+        }
     }
 
     private fun initRecyclerView() {
@@ -153,7 +201,6 @@ class SingleExerciseActivity: Fragment() {
             binding.rvExerciseSets.scrollToPosition(currentSetsAdapter.itemCount - 1)
         }
 
-
         // get last sets
         var historicSets = mutableListOf<ExerciseSet>()
         lifecycleScope.launch {
@@ -167,6 +214,7 @@ class SingleExerciseActivity: Fragment() {
 
                 if (date.isEqual(today)) {
                     setNumber++
+                    exerciseSetsToday.add(setI)
                 }
                 // find first set that has been saved before today
                 else if (date.isBefore(today)) {
