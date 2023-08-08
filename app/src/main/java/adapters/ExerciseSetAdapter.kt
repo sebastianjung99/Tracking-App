@@ -65,6 +65,9 @@ class ExerciseSetAdapter(): RecyclerView.Adapter<ExerciseSetAdapter.SingleExerci
         cListener: onItemClickListener
     ): RecyclerView.ViewHolder(binding.root) {
         init {
+            // always request focus elsewhere (e.g. binding.root.requestFocus()) when altering exerciseSetList
+            // because app will crash if textEdit element with OnFocusChangeListener has focus
+            // while recyclerview gets altered
             binding.etExerciseSetReps.setOnFocusChangeListener { view, hasFocus ->
                 mListener.onItemFocusChange(
                     bindingAdapterPosition,

@@ -20,6 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import data.ExerciseSet
 import data.TrackingAppDatabase
 import kotlinx.coroutines.launch
+import utils.Utils.hideKeyboard
 import viewmodels.WorkoutViewModel
 import viewmodels.WorkoutViewModelFactory
 import java.time.LocalDate
@@ -95,6 +96,12 @@ class SingleExerciseActivity: Fragment() {
     }
 
     private fun saveExerciseSet() {
+
+        // request focus because app will crash if textEdit element with OnFocusChangeListener
+        // has focus while recyclerview gets altered
+        binding.root.requestFocus()
+        requireActivity().hideKeyboard()
+
         lifecycleScope.launch {
             val today = Calendar.getInstance()
             val insertSet = ExerciseSet(
@@ -114,6 +121,12 @@ class SingleExerciseActivity: Fragment() {
     }
 
     private fun deleteExerciseSet(exerciseSet: ExerciseSet) {
+
+        // request focus because app will crash if textEdit element with OnFocusChangeListener
+        // has focus while recyclerview gets altered
+        binding.root.requestFocus()
+        requireActivity().hideKeyboard()
+
         viewModel.deleteExerciseSet(exerciseSet.exerciseSetId)
         getTodaysSets()
         setNumber--
@@ -129,6 +142,12 @@ class SingleExerciseActivity: Fragment() {
     }
 
     private fun updateExerciseSet(exerciseSet: ExerciseSet) {
+
+        // request focus because app will crash if textEdit element with OnFocusChangeListener
+        // has focus while recyclerview gets altered
+        binding.root.requestFocus()
+        requireActivity().hideKeyboard()
+
         viewModel.updateExerciseSet(exerciseSet)
         // getTodaysSets()
     }
@@ -138,6 +157,7 @@ class SingleExerciseActivity: Fragment() {
         val popup = PopupMenu(binding.root.context, btnView)
         popup.menuInflater.inflate(R.menu.exerciseset_menu, popup.menu)
         popup.setOnMenuItemClickListener {
+
             when (it.itemId) {
                 R.id.option_addDropset -> {
                     // TODO: implement addDropset functionality
@@ -194,11 +214,17 @@ class SingleExerciseActivity: Fragment() {
         binding.rvExerciseSetsHistoric.adapter = historicSetsAdapter
         binding.rvExerciseSetsHistoric.layoutManager = LinearLayoutManager(requireContext())
 
+        var listSize = 0
         viewModel.setsOfExerciseOfWorkoutToday.observe(viewLifecycleOwner) {
             currentSetsAdapter.setList(it)
             currentSetsAdapter.notifyDataSetChanged()
-            // auto scroll to end of list on change
-            binding.rvExerciseSets.scrollToPosition(currentSetsAdapter.itemCount - 1)
+
+            // auto scroll down if item got added
+            if (listSize < it.size) {
+                binding.rvExerciseSets.scrollToPosition(currentSetsAdapter.itemCount - 1)
+            }
+
+            listSize = it.size
         }
 
         // get last sets
