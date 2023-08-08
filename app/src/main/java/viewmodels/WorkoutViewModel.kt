@@ -67,7 +67,9 @@ class WorkoutViewModel(
         return dao.getExerciseByTitle(exerciseTitle)
     }
 
-    suspend fun getExerciseTitleById(exercise_id: Int) = dao.getExerciseTitleById(exercise_id)
+    fun getExerciseById(exerciseId: Int): Exercise {
+        return dao.getExerciseById(exerciseId)
+    }
 
 
 

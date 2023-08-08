@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentSingleExerciseBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import data.Exercise
 import data.ExerciseSet
 import data.TrackingAppDatabase
 import kotlinx.coroutines.launch
@@ -41,6 +45,8 @@ class SingleExerciseActivity: Fragment() {
     private lateinit var currentSetsAdapter: ExerciseSetAdapter
     private lateinit var historicSetsAdapter: ExerciseHistoricSetAdapter
 
+    private lateinit var exercise: Exercise
+
     private var setNumber = 1
     private var exerciseSetsToday = mutableListOf<ExerciseSet>()
 
@@ -54,15 +60,20 @@ class SingleExerciseActivity: Fragment() {
         val factory = WorkoutViewModelFactory(dao, args.workoutId, args.exerciseId)
         viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
-        // set workout title
+        // set exercise title
         lifecycleScope.launch {
-            binding.tvExerciseTitle.text = viewModel.getExerciseTitleById(args.exerciseId)
+            exercise = viewModel.getExerciseById(args.exerciseId)
+            binding.tvExerciseTitle.text = exercise.exerciseTitle
         }
 
         initRecyclerView()
 
         binding.btnSingleExerciseBack.setOnClickListener {
             findNavController().navigate(SingleExerciseActivityDirections.actionSingleExerciseToExercises(args.workoutId))
+        }
+
+        binding.btnSingleExerciseOptions.setOnClickListener {
+            singleExercisePopupMenu(it)
         }
 
         binding.btnAddSet.setOnClickListener {
@@ -153,6 +164,88 @@ class SingleExerciseActivity: Fragment() {
         // getTodaysSets()
     }
 
+    private fun singleExercisePopupMenu(view: View) {
+        val popup = PopupMenu(binding.root.context, view)
+        popup.menuInflater.inflate(R.menu.single_exercise_menu, popup.menu)
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.option_edit -> {
+
+                    binding.tvExerciseTitle.visibility = View.GONE
+                    binding.btnSingleExerciseOptions.visibility = View.GONE
+                    binding.etExerciseTitle.visibility = View.VISIBLE
+                    binding.etExerciseTitle.setText(exercise.exerciseTitle)
+                    binding.btnEditExerciseCancel.visibility = View.VISIBLE
+                    binding.btnEditExerciseSave.visibility = View.VISIBLE
+
+                    // set focus and show soft keyboard
+                    binding.etExerciseTitle.requestFocus()
+                    WindowCompat.getInsetsController(requireActivity().window, binding.etExerciseTitle).show(
+                        WindowInsetsCompat.Type.ime())
+
+                    binding.btnEditExerciseSave.setOnClickListener {
+                        // check if empty
+                        val title = binding.etExerciseTitle.text.toString()
+                        if (title.trim().isEmpty()) {
+                            // TODO: replace action with vector graphic?
+                            Snackbar.make(
+                                requireContext(),
+                                binding.root,
+                                getString(R.string.AddExerciseEmptyEditTextPrompt),
+                                Snackbar.LENGTH_SHORT
+                            ).setAction("X"){}.show()
+                        }
+                        else {
+                            requireActivity().hideKeyboard()
+
+                            // update database and hide editText and cancel+save button, show title and edit button
+                            viewModel.updateExercise(
+                                Exercise(
+                                    exerciseId = exercise.exerciseId,
+                                    exerciseTitle = title,
+                                    exerciseNote = exercise.exerciseNote
+                                )
+                            )
+                            binding.tvExerciseTitle.visibility = View.VISIBLE
+                            binding.tvExerciseTitle.text = title
+                            binding.btnSingleExerciseOptions.visibility = View.VISIBLE
+                            binding.etExerciseTitle.visibility = View.GONE
+                            binding.btnEditExerciseCancel.visibility = View.GONE
+                            binding.btnEditExerciseSave.visibility = View.GONE
+
+                            Toast.makeText(
+                                requireContext(),
+                                R.string.ExerciseUpdated,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    binding.btnEditExerciseCancel.setOnClickListener {
+                        requireActivity().hideKeyboard()
+                        // hide and show relevant elements
+                        binding.tvExerciseTitle.visibility = View.VISIBLE
+                        binding.btnSingleExerciseOptions.visibility = View.VISIBLE
+                        binding.etExerciseTitle.visibility = View.GONE
+                        binding.btnEditExerciseCancel.visibility = View.GONE
+                        binding.btnEditExerciseSave.visibility = View.GONE
+                    }
+
+                    true
+                }
+                R.id.option_exerciseAddNote -> {
+                    // TODO implement option_exerciseAddNote functionality
+                    true
+                }
+                R.id.option_showData -> {
+                    // TODO implement option_showData functionality
+                    true
+                }
+                else -> true
+            }
+        }
+        popup.show()
+    }
 
     private fun singleExerciseSetPopUpMenu(btnView: View, exerciseSet: ExerciseSet) {
         val popup = PopupMenu(binding.root.context, btnView)
