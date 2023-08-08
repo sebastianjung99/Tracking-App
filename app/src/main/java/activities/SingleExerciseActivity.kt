@@ -262,6 +262,8 @@ class SingleExerciseActivity: Fragment() {
                             && setJ.weightYear == setI.weightYear
                         ) {
                             historicSets.add(setJ)
+                            // edge case if recent sets are the first entries stored in db table
+                            if (j == historicSetsAll.size - 1) done = true
                         // stop once date changes
                         } else {
                             done = true
