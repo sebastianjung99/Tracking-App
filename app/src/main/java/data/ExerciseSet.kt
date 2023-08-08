@@ -18,6 +18,8 @@ data class ExerciseSet(
     val repetitions: Int,
     @ColumnInfo(name = "exerciseSet_weight")
     val weight: Int,
+    @ColumnInfo(name = "exerciseSet_Note")
+    val note: String,
 
     @ColumnInfo(name = "exerciseSet_day")
     val weightDay: Int,

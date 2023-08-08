@@ -110,6 +110,7 @@ class SingleExerciseActivity: Fragment() {
                 setNumber = setNumber++,
                 repetitions = 10,
                 weight = 20,
+                note = "",
                 weightDay = today.get(Calendar.DAY_OF_MONTH),
                 weightMonth = today.get(Calendar.MONTH) + 1,
                 weightYear = today.get(Calendar.YEAR)

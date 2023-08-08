@@ -121,7 +121,8 @@ class ExercisesActivity : Fragment() {
                 val exerciseId = viewModel.insertExercise(
                     Exercise(
                         exerciseId = 0,
-                        exerciseTitle = title
+                        exerciseTitle = title,
+                        exerciseNote = ""
                     )
                 )
                 viewModel.insertWorkoutExerciseCrossRef(
@@ -154,7 +155,8 @@ class ExercisesActivity : Fragment() {
         viewModel.updateExercise(
             Exercise(
                 exerciseId = exercise.exerciseId,
-                exerciseTitle = newTitle
+                exerciseTitle = newTitle,
+                exerciseNote = exercise.exerciseNote
             )
         )
     }

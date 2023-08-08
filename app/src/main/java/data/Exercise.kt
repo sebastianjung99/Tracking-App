@@ -10,5 +10,7 @@ data class Exercise (
     @ColumnInfo(name = "exercise_id")
     val exerciseId: Int,
     @ColumnInfo(name = "exercise_title")
-    val exerciseTitle: String
+    val exerciseTitle: String,
+    @ColumnInfo(name = "exercise_Note")
+    val exerciseNote: String
 )
