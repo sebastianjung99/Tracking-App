@@ -27,8 +27,8 @@ interface WorkoutDao {
     @Query("SELECT * FROM workouts_data_table")
     fun getAllWorkouts(): LiveData<List<Workout>>
 
-    @Query("SELECT workout_title FROM workouts_data_table WHERE workout_id = :workoutId")
-    fun getWorkoutTitleById(workoutId: Int): String
+    @Query("SELECT * FROM workouts_data_table WHERE workout_id = :workoutId")
+    fun getWorkoutById(workoutId: Int): Workout
 
 
 

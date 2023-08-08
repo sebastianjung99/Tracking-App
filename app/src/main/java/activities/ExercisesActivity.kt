@@ -23,6 +23,7 @@ import com.example.trackingapp.databinding.FragmentExercisesBinding
 import com.google.android.material.snackbar.Snackbar
 import data.Exercise
 import data.TrackingAppDatabase
+import data.Workout
 import data.relations.WorkoutExerciseCrossRef
 import kotlinx.coroutines.launch
 import utils.Utils.hideKeyboard
@@ -42,6 +43,8 @@ class ExercisesActivity : Fragment() {
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: ExercisesAdapter
 
+    private lateinit var workout: Workout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,7 +58,8 @@ class ExercisesActivity : Fragment() {
 
         // set workout title
         lifecycleScope.launch {
-            binding.tvWorkoutTitle.text = viewModel.getWorkoutTitleById(args.workoutId)
+            workout = viewModel.getWorkoutById(args.workoutId)
+            binding.tvWorkoutTitle.text = workout.workoutTitle
         }
 
         initRecyclerView()
@@ -79,6 +83,10 @@ class ExercisesActivity : Fragment() {
 
         binding.btnExercisesBack.setOnClickListener {
             findNavController().navigate(ExercisesActivityDirections.actionExercisesToWorkouts())
+        }
+
+        binding.btnWorkoutOptions.setOnClickListener {
+            exercisesPopUpMenu(it)
         }
 
         binding.btnAddExercise.setOnClickListener {
@@ -135,7 +143,6 @@ class ExercisesActivity : Fragment() {
             }
         }
 
-
         binding.etAddExercise.text.clear()
         requireActivity().hideKeyboard()
     }
@@ -159,6 +166,80 @@ class ExercisesActivity : Fragment() {
                 exerciseNote = exercise.exerciseNote
             )
         )
+    }
+
+    private fun exercisesPopUpMenu(view: View) {
+        val popup = PopupMenu(binding.root.context, view)
+        popup.menuInflater.inflate(R.menu.single_workout_menu, popup.menu)
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.option_edit -> {
+
+                    binding.tvWorkoutTitle.visibility = View.GONE
+                    binding.btnWorkoutOptions.visibility = View.GONE
+                    binding.etWorkoutTitle.visibility = View.VISIBLE
+                    binding.etWorkoutTitle.setText(workout.workoutTitle)
+                    binding.btnEditWorkoutCancel.visibility = View.VISIBLE
+                    binding.btnEditWorkoutSave.visibility = View.VISIBLE
+
+                    // set focus and show soft keyboard
+                    binding.etWorkoutTitle.requestFocus()
+                    WindowCompat.getInsetsController(requireActivity().window, binding.etWorkoutTitle).show(
+                        WindowInsetsCompat.Type.ime())
+
+                    binding.btnEditWorkoutSave.setOnClickListener {
+                        // check if empty
+                        val title = binding.etWorkoutTitle.text.toString()
+                        if (title.trim().isEmpty()) {
+                            // TODO: replace action with vector graphic?
+                            Snackbar.make(
+                                requireContext(),
+                                binding.root,
+                                getString(R.string.NewWorkoutEmptyEditTextPrompt),
+                                Snackbar.LENGTH_SHORT
+                            ).setAction("X"){}.show()
+                        }
+                        else {
+                            requireActivity().hideKeyboard()
+
+                            // update database and hide editText and cancel+save button, show title and edit button
+                            viewModel.updateWorkout(
+                                Workout(
+                                    workoutId = workout.workoutId,
+                                    workoutTitle = title
+                                )
+                            )
+                            binding.tvWorkoutTitle.visibility = View.VISIBLE
+                            binding.tvWorkoutTitle.text = title
+                            binding.btnWorkoutOptions.visibility = View.VISIBLE
+                            binding.etWorkoutTitle.visibility = View.GONE
+                            binding.btnEditWorkoutCancel.visibility = View.GONE
+                            binding.btnEditWorkoutSave.visibility = View.GONE
+
+                            Toast.makeText(
+                                requireContext(),
+                                R.string.WorkoutUpdated,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    binding.btnEditWorkoutCancel.setOnClickListener {
+                        requireActivity().hideKeyboard()
+                        // hide and show relevant elements
+                        binding.tvWorkoutTitle.visibility = View.VISIBLE
+                        binding.btnWorkoutOptions.visibility = View.VISIBLE
+                        binding.etWorkoutTitle.visibility = View.GONE
+                        binding.btnEditWorkoutCancel.visibility = View.GONE
+                        binding.btnEditWorkoutSave.visibility = View.GONE
+                    }
+
+                    true
+                }
+                else -> true
+            }
+        }
+        popup.show()
     }
 
     private fun singleExercisePopupMenu(btnView: View, exercise: Exercise) {
