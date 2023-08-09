@@ -55,6 +55,8 @@ class WorkoutsActivity : Fragment() {
 
         initRecyclerView()
 
+        initGesture()
+
         adapter.setOnItemClickListener(object : WorkoutsAdapter.onItemClickListener {
             override fun onItemClick(position: Int, view: View, workout: Workout) {
                 when (view.id) {
@@ -68,42 +70,6 @@ class WorkoutsActivity : Fragment() {
                 }
             }
         })
-
-
-        val gesture = object: Gesture() {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-
-                val fromPosition = viewHolder.absoluteAdapterPosition
-                val toPosition = target.absoluteAdapterPosition
-
-                // swap position in db
-                val workoutFromPosition = viewModel.getWorkoutByPosition(fromPosition)
-                val workoutToPosition = viewModel.getWorkoutByPosition(toPosition)
-                viewModel.updateWorkout(
-                    Workout(
-                        workoutId = workoutFromPosition.workoutId,
-                        workoutTitle = workoutFromPosition.workoutTitle,
-                        workoutPosition = toPosition
-                    )
-                )
-                viewModel.updateWorkout(
-                    Workout(
-                        workoutId = workoutToPosition.workoutId,
-                        workoutTitle = workoutToPosition.workoutTitle,
-                        workoutPosition = fromPosition
-                    )
-                )
-
-                adapter.notifyItemMoved(fromPosition, toPosition)
-                return false
-            }
-        }
-        val touchHelper = ItemTouchHelper(gesture)
-        touchHelper.attachToRecyclerView(binding.rvWorkouts)
 
         binding.btnAddWorkout.setOnClickListener {
             val title = binding.etAddWorkout.text.toString()
@@ -240,6 +206,42 @@ class WorkoutsActivity : Fragment() {
         popup.show()
     }
 
+    private fun initGesture() {
+        val gesture = object: Gesture() {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+
+                val fromPosition = viewHolder.absoluteAdapterPosition
+                val toPosition = target.absoluteAdapterPosition
+
+                // swap position in db
+                val workoutFromPosition = viewModel.getWorkoutByPosition(fromPosition)
+                val workoutToPosition = viewModel.getWorkoutByPosition(toPosition)
+                viewModel.updateWorkout(
+                    Workout(
+                        workoutId = workoutFromPosition.workoutId,
+                        workoutTitle = workoutFromPosition.workoutTitle,
+                        workoutPosition = toPosition
+                    )
+                )
+                viewModel.updateWorkout(
+                    Workout(
+                        workoutId = workoutToPosition.workoutId,
+                        workoutTitle = workoutToPosition.workoutTitle,
+                        workoutPosition = fromPosition
+                    )
+                )
+
+                adapter.notifyItemMoved(fromPosition, toPosition)
+                return false
+            }
+        }
+        val touchHelper = ItemTouchHelper(gesture)
+        touchHelper.attachToRecyclerView(binding.rvWorkouts)
+    }
 
     private fun initRecyclerView() {
         adapter = WorkoutsAdapter()
