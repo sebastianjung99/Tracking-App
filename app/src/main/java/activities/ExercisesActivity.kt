@@ -206,7 +206,8 @@ class ExercisesActivity : Fragment() {
                             viewModel.updateWorkout(
                                 Workout(
                                     workoutId = workout.workoutId,
-                                    workoutTitle = title
+                                    workoutTitle = title,
+                                    workoutPosition = workout.workoutPosition
                                 )
                             )
                             binding.tvWorkoutTitle.visibility = View.VISIBLE

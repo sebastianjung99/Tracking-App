@@ -18,7 +18,7 @@ class WorkoutViewModel(
     private val workoutId: Int,
     private val exerciseId: Int
 ): ViewModel() {
-    val workouts = dao.getAllWorkouts()
+    val workouts = dao.getAllWorkoutsOrderedByWorkoutPositionASC()
     var exercisesOfWorkout = dao.getExercisesOfWorkout(workoutId)
 
     val setsOfExerciseOfWorkoutToday = dao.getExerciseSetsByExerciseWorkoutDate(
@@ -47,6 +47,8 @@ class WorkoutViewModel(
     }
 
     suspend fun getWorkoutById(workout_id: Int) = dao.getWorkoutById(workout_id)
+
+    fun getWorkoutByPosition(workoutPosition: Int) = dao.getWorkoutByPosition(workoutPosition)
 
 
 

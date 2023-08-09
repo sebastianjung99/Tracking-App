@@ -20,6 +20,9 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import Other.Gesture
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
 import data.TrackingAppDatabase
@@ -37,6 +40,8 @@ class WorkoutsActivity : Fragment() {
 
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: WorkoutsAdapter
+
+    private var nextPosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +69,42 @@ class WorkoutsActivity : Fragment() {
             }
         })
 
+
+        val gesture = object: Gesture() {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+
+                val fromPosition = viewHolder.absoluteAdapterPosition
+                val toPosition = target.absoluteAdapterPosition
+
+                // swap position in db
+                val workoutFromPosition = viewModel.getWorkoutByPosition(fromPosition)
+                val workoutToPosition = viewModel.getWorkoutByPosition(toPosition)
+                viewModel.updateWorkout(
+                    Workout(
+                        workoutId = workoutFromPosition.workoutId,
+                        workoutTitle = workoutFromPosition.workoutTitle,
+                        workoutPosition = toPosition
+                    )
+                )
+                viewModel.updateWorkout(
+                    Workout(
+                        workoutId = workoutToPosition.workoutId,
+                        workoutTitle = workoutToPosition.workoutTitle,
+                        workoutPosition = fromPosition
+                    )
+                )
+
+                adapter.notifyItemMoved(fromPosition, toPosition)
+                return false
+            }
+        }
+        val touchHelper = ItemTouchHelper(gesture)
+        touchHelper.attachToRecyclerView(binding.rvWorkouts)
+
         binding.btnAddWorkout.setOnClickListener {
             val title = binding.etAddWorkout.text.toString()
             if (title.trim().isEmpty()) {
@@ -87,7 +128,8 @@ class WorkoutsActivity : Fragment() {
         viewModel.insertWorkout(
             Workout(
                 workoutId = 0,
-                workoutTitle = binding.etAddWorkout.text.toString()
+                workoutTitle = binding.etAddWorkout.text.toString(),
+                workoutPosition = nextPosition++
             )
         )
         binding.etAddWorkout.text.clear()
@@ -96,13 +138,15 @@ class WorkoutsActivity : Fragment() {
 
     private fun deleteWorkoutData(workouts_id: Int) {
         viewModel.deleteWorkout(workouts_id)
+        nextPosition--
     }
 
-    private fun updateWorkoutData(workout: Workout, newTitle: String) {
+    private fun updateWorkoutData(workout: Workout, newTitle: String, newPosition: Int) {
         viewModel.updateWorkout(
             Workout(
                 workoutId = workout.workoutId,
-                workoutTitle = newTitle
+                workoutTitle = newTitle,
+                workoutPosition = newPosition
             )
         )
     }
@@ -162,7 +206,7 @@ class WorkoutsActivity : Fragment() {
                         }
                         else {
                             // update database and hide editText and cancel+save button, show title and edit button
-                            updateWorkoutData(workout, title)
+                            updateWorkoutData(workout, title, workout.workoutPosition)
                             workoutsTextView.visibility = VISIBLE
                             editWorkoutButton.visibility = VISIBLE
                             editWorkoutText.visibility = GONE
@@ -203,9 +247,16 @@ class WorkoutsActivity : Fragment() {
         binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
 
         // display workouts list
+        var listSize = 0
         viewModel.workouts.observe(viewLifecycleOwner) {
             adapter.setList(it)
-            adapter.notifyDataSetChanged()
+
+            // cannot use nextPosition in if statement as it gets incremented in saveWorkoutData()
+            if (listSize != it.size) {
+                nextPosition = it.size
+                listSize = it.size
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 

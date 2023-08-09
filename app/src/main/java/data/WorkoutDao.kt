@@ -27,8 +27,14 @@ interface WorkoutDao {
     @Query("SELECT * FROM workouts_data_table")
     fun getAllWorkouts(): LiveData<List<Workout>>
 
+    @Query("SELECT * FROM workouts_data_table ORDER BY workout_position ASC")
+    fun getAllWorkoutsOrderedByWorkoutPositionASC(): LiveData<List<Workout>>
+
     @Query("SELECT * FROM workouts_data_table WHERE workout_id = :workoutId")
     fun getWorkoutById(workoutId: Int): Workout
+
+    @Query("SELECT * FROM workouts_data_table WHERE workout_position = :workoutPosition")
+    fun getWorkoutByPosition(workoutPosition: Int): Workout
 
 
 
