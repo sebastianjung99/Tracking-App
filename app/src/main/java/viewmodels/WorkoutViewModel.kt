@@ -19,7 +19,7 @@ class WorkoutViewModel(
     private val exerciseId: Int
 ): ViewModel() {
     val workouts = dao.getAllWorkoutsOrderedByWorkoutPositionASC()
-    var exercisesOfWorkout = dao.getExercisesOfWorkout(workoutId)
+    val exercisesOfWorkout = dao.getExercisesOfWorkoutOrderedByPosition(workoutId)
 
     val setsOfExerciseOfWorkoutToday = dao.getExerciseSetsByExerciseWorkoutDate(
         workoutId = workoutId,
@@ -112,11 +112,23 @@ class WorkoutViewModel(
         dao.deleteWorkoutExerciseCrossRef(workoutId, exerciseId)
     }
 
+    fun updateWorkoutExerciseCrossRef(crossRef: WorkoutExerciseCrossRef) = viewModelScope.launch {
+        dao.updateWorkoutExerciseCrossRef(crossRef)
+    }
+
     fun getWorkoutsOfExercise(exerciseId: Int): LiveData<ExerciseWithWorkouts> {
         return dao.getWorkoutsOfExercise(exerciseId)
     }
 
     fun getExercisesOfWorkout(workoutId: Int): LiveData<WorkoutWithExercises> {
         return dao.getExercisesOfWorkout(workoutId)
+    }
+
+    fun getWorkoutExerciseCrossRefByPosition(position: Int): WorkoutExerciseCrossRef {
+        return dao.getWorkoutExerciseCrossRefByPosition(position)
+    }
+
+    fun getExercisesOfWorkoutOrderedByPosition(workoutId: Int): LiveData<List<Exercise>> {
+        return dao.getExercisesOfWorkoutOrderedByPosition(workoutId)
     }
 }

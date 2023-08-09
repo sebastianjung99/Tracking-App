@@ -1,5 +1,6 @@
 package activities
 
+import Other.Gesture
 import adapters.ExercisesAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +18,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentExercisesBinding
 import com.google.android.material.snackbar.Snackbar
@@ -45,6 +48,8 @@ class ExercisesActivity : Fragment() {
 
     private lateinit var workout: Workout
 
+    private var nextPosition = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,6 +68,8 @@ class ExercisesActivity : Fragment() {
         }
 
         initRecyclerView()
+
+        initGesture()
 
         adapter.setOnItemClickListener(object : ExercisesAdapter.onItemClickListener {
             override fun onItemClick(position: Int, view: View, exercise: Exercise) {
@@ -121,7 +128,7 @@ class ExercisesActivity : Fragment() {
                     WorkoutExerciseCrossRef(
                         workout_id = args.workoutId,
                         exercise_id = existingExercise.exerciseId,
-                        adapter.itemCount
+                        position = nextPosition++
                     )
                 )
             }
@@ -137,7 +144,7 @@ class ExercisesActivity : Fragment() {
                     WorkoutExerciseCrossRef(
                         workout_id = args.workoutId,
                         exercise_id = exerciseId.toInt(),
-                        adapter.itemCount
+                        position = nextPosition++
                     )
                 )
             }
@@ -153,6 +160,7 @@ class ExercisesActivity : Fragment() {
             workoutId = workoutId,
             exerciseId = exerciseId
         )
+        nextPosition--
     }
 
     private fun updateExercise(
@@ -164,6 +172,16 @@ class ExercisesActivity : Fragment() {
                 exerciseId = exercise.exerciseId,
                 exerciseTitle = newTitle,
                 exerciseNote = exercise.exerciseNote
+            )
+        )
+    }
+
+    private fun updateWorkoutExerciseCrossRef(workoutId: Int, exerciseId: Int, newPosition: Int) {
+        viewModel.updateWorkoutExerciseCrossRef(
+            WorkoutExerciseCrossRef(
+                workout_id = workoutId,
+                exercise_id = exerciseId,
+                position = newPosition
             )
         )
     }
@@ -333,15 +351,55 @@ class ExercisesActivity : Fragment() {
         popup.show()
     }
 
+    private fun initGesture() {
+        val gesture = object: Gesture() {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+
+                val fromPosition = viewHolder.absoluteAdapterPosition
+                val toPosition = target.absoluteAdapterPosition
+
+                // swap position in db
+                val crossRefFromPosition = viewModel.getWorkoutExerciseCrossRefByPosition(fromPosition)
+                val crossRefToPosition = viewModel.getWorkoutExerciseCrossRefByPosition(toPosition)
+
+                updateWorkoutExerciseCrossRef(
+                    workoutId = crossRefFromPosition.workout_id,
+                    exerciseId = crossRefFromPosition.exercise_id,
+                    newPosition = toPosition
+                )
+                updateWorkoutExerciseCrossRef(
+                    workoutId = crossRefToPosition.workout_id,
+                    exerciseId = crossRefToPosition.exercise_id,
+                    newPosition = fromPosition
+                )
+
+                adapter.notifyItemMoved(fromPosition, toPosition)
+                return false
+            }
+        }
+        val touchHelper = ItemTouchHelper(gesture)
+        touchHelper.attachToRecyclerView(binding.rvExercises)
+    }
 
     private fun initRecyclerView() {
         adapter = ExercisesAdapter()
         binding.rvExercises.adapter = adapter
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
 
+        var listSize = 0
         viewModel.exercisesOfWorkout.observe(viewLifecycleOwner) {
-            adapter.setList(it.exercises)
-            adapter.notifyDataSetChanged()
+            adapter.setList(it)
+
+            // cannot use nextPosition in if statement as it gets incremented in saveWorkoutData()
+            if (listSize != it.size) {
+                nextPosition = it.size
+                listSize = it.size
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 

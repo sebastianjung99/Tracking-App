@@ -112,9 +112,23 @@ interface WorkoutDao {
     @Query("DELETE FROM WorkoutExerciseCrossRef WHERE workout_id = :workoutId AND exercise_id = :exerciseId")
     suspend fun deleteWorkoutExerciseCrossRef(workoutId: Int, exerciseId: Int)
 
+    @Update
+    suspend fun updateWorkoutExerciseCrossRef(crossRef: WorkoutExerciseCrossRef)
+
     @Query("SELECT * FROM exercises_data_table WHERE exercise_id = :exerciseId")
     fun getWorkoutsOfExercise(exerciseId: Int): LiveData<ExerciseWithWorkouts>
 
     @Query("SELECT * FROM workouts_data_table WHERE workout_id = :workoutId")
     fun getExercisesOfWorkout(workoutId: Int): LiveData<WorkoutWithExercises>
+
+    @Query("SELECT * FROM WorkoutExerciseCrossRef WHERE position = :position")
+    fun getWorkoutExerciseCrossRefByPosition(position: Int): WorkoutExerciseCrossRef
+
+    @Query("SELECT exercises_data_table.*\n" +
+            "FROM WORKOUTEXERCISECROSSREF \n" +
+            "INNER JOIN exercises_data_table\n" +
+            "ON WORKOUTEXERCISECROSSREF.exercise_id = exercises_data_table.exercise_id\n" +
+            "WHERE WORKOUTEXERCISECROSSREF.workout_id = :workoutId\n" +
+            "ORDER BY position ASC")
+    fun getExercisesOfWorkoutOrderedByPosition(workoutId: Int): LiveData<List<Exercise>>
 }
