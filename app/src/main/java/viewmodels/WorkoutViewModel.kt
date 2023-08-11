@@ -46,7 +46,7 @@ class WorkoutViewModel(
         dao.updateWorkout(workout)
     }
 
-    suspend fun getWorkoutById(workout_id: Int) = dao.getWorkoutById(workout_id)
+    fun getWorkoutById(workout_id: Int) = dao.getWorkoutById(workout_id)
 
     fun getWorkoutByPosition(workoutPosition: Int) = dao.getWorkoutByPosition(workoutPosition)
 
@@ -90,7 +90,7 @@ class WorkoutViewModel(
         dao.updateExerciseSet(exerciseSet)
     }
 
-    suspend fun getAllExerciseSets() = dao.getAllExerciseSets()
+    fun getAllExerciseSets() = dao.getAllExerciseSets()
 
     fun getExerciseSetsByExerciseWorkout(
         exerciseId: Int,
