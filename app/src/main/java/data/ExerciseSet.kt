@@ -12,6 +12,10 @@ data class ExerciseSet(
     @ColumnInfo(name = "exerciseSet_exerciseId")
     val exerciseId: Int,
 
+    // exerciseSetId if dropset, else 0
+    @ColumnInfo(name = "exerciseSet_dropSetOf")
+    val dropSetOfSetId: Long,
+    // setNumber is 0 if dropset
     @ColumnInfo(name = "exerciseSet_setNumber")
     val setNumber: Int,
     @ColumnInfo(name = "exerciseSet_repetitions")

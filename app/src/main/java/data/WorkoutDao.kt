@@ -68,7 +68,7 @@ interface WorkoutDao {
     /* TODO: add position array to ExerciseSet.kt so we can have different sets for the same
     exercise if exercise gets added to a workout multiple times */
     @Insert
-    suspend fun insertExerciseSet(exerciseSet: ExerciseSet)
+    suspend fun insertExerciseSet(exerciseSet: ExerciseSet): Long
 
     @Update
     suspend fun updateExerciseSet(exerciseSet: ExerciseSet)
@@ -81,8 +81,9 @@ interface WorkoutDao {
 
     @Query("SELECT exerciseSet_data_table.* FROM exerciseSet_data_table\n" +
             "INNER JOIN WorkoutExerciseCrossRef ON exerciseSet_exerciseId = exercise_id\n" +
-            "WHERE workout_id = :workoutId AND exercise_id = :exerciseId AND " +
-            "exerciseSet_day = :day AND exerciseSet_month = :month AND exerciseSet_year = :year")
+            "WHERE workout_id = :workoutId AND exercise_id = :exerciseId AND \n" +
+            "exerciseSet_day = :day AND exerciseSet_month = :month AND exerciseSet_year = :year\n" +
+            "ORDER BY exerciseSet_dropSetOf, exerciseSet_setNumber")
     fun getExerciseSetsByExerciseWorkoutDate(
         exerciseId: Int,
         workoutId: Int,

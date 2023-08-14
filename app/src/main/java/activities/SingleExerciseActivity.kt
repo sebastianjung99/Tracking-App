@@ -106,7 +106,7 @@ class SingleExerciseActivity: Fragment() {
         return binding.root
     }
 
-    private fun saveExerciseSet() {
+    fun saveExerciseSet(dropSetOfSetId: Long = 0) {
 
         // request focus because app will crash if textEdit element with OnFocusChangeListener
         // has focus while recyclerview gets altered
@@ -115,9 +115,10 @@ class SingleExerciseActivity: Fragment() {
 
         lifecycleScope.launch {
             val today = Calendar.getInstance()
-            val insertSet = ExerciseSet(
+            var insertSet = ExerciseSet(
                 exerciseSetId = 0,
                 exerciseId = args.exerciseId,
+                dropSetOfSetId = dropSetOfSetId,
                 setNumber = setNumber++,
                 repetitions = 10,
                 weight = 20,
@@ -126,27 +127,40 @@ class SingleExerciseActivity: Fragment() {
                 weightMonth = today.get(Calendar.MONTH) + 1,
                 weightYear = today.get(Calendar.YEAR)
             )
-            exerciseSetsToday.add(insertSet)
-            viewModel.insertExerciseSet(insertSet)
-        }
 
+            // dropSetOfSetId is not passed (= 0) if no dropset
+            // check if dropset, if yes change set number to 0 (= dropset)
+            if (dropSetOfSetId != 0L) {
+                insertSet = insertSet.copy(setNumber = Int.MAX_VALUE)
+                setNumber--
+                viewModel.insertExerciseSet(insertSet)
+            }
+            // if not, change set number, then insert, get id back and change dropSetOfSetId to id
+            else {
+                val id = viewModel.insertExerciseSet(insertSet)
+                insertSet = insertSet.copy(exerciseSetId = id.toInt(), dropSetOfSetId = id)
+                updateExerciseSet(insertSet)
+            }
+
+            exerciseSetsToday.add(insertSet)
+        }
     }
 
-    private fun deleteExerciseSet(exerciseSet: ExerciseSet) {
+    private fun deleteExerciseSet(exerciseSetToDelete: ExerciseSet) {
 
         // request focus because app will crash if textEdit element with OnFocusChangeListener
         // has focus while recyclerview gets altered
         binding.root.requestFocus()
         requireActivity().hideKeyboard()
 
-        viewModel.deleteExerciseSet(exerciseSet.exerciseSetId)
+        viewModel.deleteExerciseSet(exerciseSetToDelete.exerciseSetId)
         getTodaysSets()
         setNumber--
 
         // update set numbers for sets after deleted one
         for (i in 0 until exerciseSetsToday.size - 1) {
             val currentSet = exerciseSetsToday[i]
-            if (currentSet.setNumber > exerciseSet.setNumber) {
+            if ((currentSet.setNumber > exerciseSetToDelete.setNumber) and (currentSet.setNumber != Int.MAX_VALUE)) {
                 val newSet = currentSet.copy(setNumber = exerciseSetsToday[i].setNumber - 1)
                 updateExerciseSet(newSet)
             }
@@ -254,7 +268,7 @@ class SingleExerciseActivity: Fragment() {
 
             when (it.itemId) {
                 R.id.option_addDropset -> {
-                    // TODO: implement addDropset functionality
+                    saveExerciseSet(exerciseSet.exerciseSetId.toLong())
                     true
                 }
                 R.id.option_addNote -> {
@@ -291,11 +305,13 @@ class SingleExerciseActivity: Fragment() {
             val setI = historicSetsAll[i]
             val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
 
-            if (date.isEqual(today)) {
+            // do not count dropsets (setNumber is 0 if dropset)
+            if (date.isEqual(today) and (setI.setNumber != 0)){
                 setNumber++
                 exerciseSetsToday.add(setI)
             }
-            else break
+            else if (!date.isEqual(today))
+                break
         }
     }
 
@@ -332,7 +348,8 @@ class SingleExerciseActivity: Fragment() {
                 var done = false
                 val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
 
-                if (date.isEqual(today)) {
+                // do not count dropsets (setNumber is 0 if dropset)
+                if (date.isEqual(today) and (setI.setNumber != 0)) {
                     setNumber++
                     exerciseSetsToday.add(setI)
                 }

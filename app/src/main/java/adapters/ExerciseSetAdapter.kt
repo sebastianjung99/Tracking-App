@@ -44,7 +44,16 @@ class ExerciseSetAdapter(): RecyclerView.Adapter<ExerciseSetAdapter.SingleExerci
 
     override fun onBindViewHolder(holder: SingleExerciseViewHolder, position: Int) {
         holder.binding.apply {
-            tvExerciseSetNumber.text = exerciseSetList[position].setNumber.toString()
+            // setNumber is 0 if dropset
+            if (exerciseSetList[position].setNumber != Int.MAX_VALUE) {
+                tvExerciseSetNumber.text = exerciseSetList[position].setNumber.toString()
+                tvExerciseSetNumber.visibility = View.VISIBLE
+                imageDropSetIndicator.visibility = View.GONE
+            }
+            else {
+                tvExerciseSetNumber.visibility = View.GONE
+                imageDropSetIndicator.visibility = View.VISIBLE
+            }
             etExerciseSetReps.hint = exerciseSetList[position].repetitions.toString()
             etExerciseSetWeight.hint = exerciseSetList[position].weight.toString()
         }

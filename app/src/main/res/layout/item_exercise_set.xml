@@ -2,8 +2,29 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/layout_dropSetIndicator"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_setInputs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+    <ImageView
+        android:id="@+id/imageDropSetIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:adjustViewBounds="true"
+        android:background="#00FFFFFF"
+        android:contentDescription="@string/RemoveSet"
+        android:scaleType="centerCrop"
+        android:src="@drawable/subdirectory_arrow_right_48px"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvExerciseSetNumber"
@@ -12,18 +33,17 @@
         android:gravity="center"
         android:text="#"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
+
+    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/layout_setInputs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintStart_toEndOf="@+id/tvExerciseSetNumber"
+        app:layout_constraintStart_toEndOf="@+id/layout_dropSetIndicator"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
@@ -31,20 +51,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"
             android:gravity="center"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/etExerciseSetReps"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center"
             android:inputType="numberDecimal"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -52,10 +72,10 @@
         android:id="@+id/linearLayout3"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_setInputs"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center_horizontal">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btnEditCurrentExerciseSet"
@@ -65,10 +85,9 @@
             android:background="#00FFFFFF"
             android:contentDescription="@string/RemoveSet"
             android:scaleType="centerCrop"
-            android:src="@drawable/dots_vertical"/>
+            android:src="@drawable/dots_vertical" />
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

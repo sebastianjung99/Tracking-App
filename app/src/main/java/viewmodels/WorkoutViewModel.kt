@@ -78,9 +78,7 @@ class WorkoutViewModel(
     /*********************************************/
     /**********       EXERCISE SET      **********/
     /*********************************************/
-    fun insertExerciseSet(exerciseSet: ExerciseSet) = viewModelScope.launch {
-        dao.insertExerciseSet(exerciseSet)
-    }
+    suspend fun insertExerciseSet(exerciseSet: ExerciseSet) = dao.insertExerciseSet(exerciseSet)
 
     fun deleteExerciseSet(exerciseSet_id: Int) = viewModelScope.launch {
         dao.deleteExerciseSet(exerciseSet_id)
