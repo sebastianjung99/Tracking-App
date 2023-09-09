@@ -338,56 +338,38 @@ class SingleExerciseActivity: Fragment() {
         }
 
         // get last sets
-        var historicSets = mutableListOf<ExerciseSet>()
+        var historicSets: List<ExerciseSet>? = listOf()
         lifecycleScope.launch {
             val historicSetsAll = viewModel.getExerciseSetsByExerciseWorkout(args.exerciseId, args.workoutId)
             val today = LocalDate.now()
 
             for (i in historicSetsAll.indices) {
                 val setI = historicSetsAll[i]
-                var done = false
                 val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
 
-                // do not count dropsets (setNumber is 0 if dropset)
-                if (date.isEqual(today) and (setI.setNumber != 0)) {
-                    setNumber++
-                    exerciseSetsToday.add(setI)
-                }
                 // find first set that has been saved before today
-                else if (date.isBefore(today)) {
-                    historicSets.add(setI)
+                if (date.isBefore(today)) {
+                    historicSets = viewModel.getExerciseSetsByExerciseWorkoutDateAsList(
+                        args.exerciseId,
+                        args.workoutId,
+                        setI.weightDay,
+                        setI.weightMonth,
+                        setI.weightYear
+                    )
                     binding.tvHistoricSetDate.text = LocalDate.of(
                         setI.weightYear,
                         setI.weightMonth,
                         setI.weightDay
                     ).format(DateTimeFormatter.ofPattern("d. MMMM")).toString()
 
-                    // since sets are sorted descending by id, higher id means more recent date
-                    // iterate from here and add all sets with same date to historicSets
-                    for (j in i + 1 until historicSetsAll.size) {
-                        val setJ = historicSetsAll[j]
-                        if (
-                            setJ.weightDay == setI.weightDay
-                            && setJ.weightMonth == setI.weightMonth
-                            && setJ.weightYear == setI.weightYear
-                        ) {
-                            historicSets.add(setJ)
-                            // edge case if recent sets are the first entries stored in db table
-                            if (j == historicSetsAll.size - 1) done = true
-                        // stop once date changes
-                        } else {
-                            done = true
-                            break
-                        }
-                    }
+                    break
                 }
-                if (done) break
             }
 
             // reverse list since it's ordered by exerciseSet_id, but higher exerciseSet_id means
             // higher exerciseSet_setNumber, and we want the list displayed by ascending setNumber,
             // not descending
-            historicSetsAdapter.setList(historicSets.toList().asReversed())
+            historicSets?.let { historicSetsAdapter.setList(it) }
             historicSetsAdapter.notifyDataSetChanged()
         }
 

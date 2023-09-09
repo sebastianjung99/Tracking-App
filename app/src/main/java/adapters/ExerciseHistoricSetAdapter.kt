@@ -1,6 +1,7 @@
 package adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.databinding.ItemExerciseSetHistoricBinding
@@ -18,7 +19,16 @@ class ExerciseHistoricSetAdapter(): RecyclerView.Adapter<ExerciseHistoricSetAdap
 
     override fun onBindViewHolder(holder: SingleExerciseViewHolder, position: Int) {
         holder.binding.apply {
-            tvExerciseSetNumber.text = exerciseSetList[position].setNumber.toString()
+            // setNumber is 2147483647 if dropset
+            if (exerciseSetList[position].setNumber != Int.MAX_VALUE) {
+                tvExerciseSetNumber.text = exerciseSetList[position].setNumber.toString()
+                tvExerciseSetNumber.visibility = View.VISIBLE
+                imageDropSetIndicator.visibility = View.GONE
+            }
+            else {
+                tvExerciseSetNumber.visibility = View.GONE
+                imageDropSetIndicator.visibility = View.VISIBLE
+            }
             tvExerciseSetReps.text = exerciseSetList[position].repetitions.toString()
             tvExerciseSetWeight.text = exerciseSetList[position].weight.toString()
         }

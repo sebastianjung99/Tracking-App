@@ -93,6 +93,19 @@ interface WorkoutDao {
     ): LiveData<List<ExerciseSet>>
 
     @Query("SELECT exerciseSet_data_table.* FROM exerciseSet_data_table\n" +
+            "INNER JOIN WorkoutExerciseCrossRef ON exerciseSet_exerciseId = exercise_id\n" +
+            "WHERE workout_id = :workoutId AND exercise_id = :exerciseId AND \n" +
+            "exerciseSet_day = :day AND exerciseSet_month = :month AND exerciseSet_year = :year\n" +
+            "ORDER BY exerciseSet_dropSetOf, exerciseSet_setNumber")
+    fun getExerciseSetsByExerciseWorkoutDateAsList(
+        exerciseId: Int,
+        workoutId: Int,
+        day: Int,
+        month: Int,
+        year: Int
+    ): List<ExerciseSet>
+
+    @Query("SELECT exerciseSet_data_table.* FROM exerciseSet_data_table\n" +
             "INNER JOIN WorkoutExerciseCrossRef ON exerciseSet_data_table.exerciseSet_exerciseId = " +
             "WorkoutExerciseCrossRef.exercise_id\n" +
             "WHERE workout_id = :workoutId AND exercise_id = :exerciseId\n" +

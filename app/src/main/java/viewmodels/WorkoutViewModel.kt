@@ -90,6 +90,14 @@ class WorkoutViewModel(
 
     fun getAllExerciseSets() = dao.getAllExerciseSets()
 
+    fun getExerciseSetsByExerciseWorkoutDateAsList(
+        exerciseId: Int,
+        workoutId: Int,
+        day: Int,
+        month: Int,
+        year: Int
+    ) = dao.getExerciseSetsByExerciseWorkoutDateAsList(workoutId, exerciseId, day, month, year)
+
     fun getExerciseSetsByExerciseWorkout(
         exerciseId: Int,
         workoutId: Int
