@@ -18,13 +18,14 @@
     <ImageView
         android:id="@+id/imageDropSetIndicator"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:background="#00FFFFFF"
         android:contentDescription="@string/RemoveSet"
         android:scaleType="centerCrop"
         android:src="@drawable/subdirectory_arrow_right_48px"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:ignore="Suspicious0dp" />
 
     <TextView
         android:id="@+id/tvExerciseSetNumber"
@@ -83,9 +84,20 @@
             android:layout_height="30dp"
             android:adjustViewBounds="true"
             android:background="#00FFFFFF"
-            android:contentDescription="@string/RemoveSet"
+            android:contentDescription="@string/EditSet"
             android:scaleType="centerCrop"
             android:src="@drawable/dots_vertical" />
+
+        <ImageButton
+            android:id="@+id/btnDeleteDropSet"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:adjustViewBounds="true"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/RemoveSet"
+            android:scaleType="centerCrop"
+            android:src="@drawable/delete_48px"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

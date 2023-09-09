@@ -82,7 +82,22 @@ class SingleExerciseActivity: Fragment() {
 
         currentSetsAdapter.setOnItemClickListener(object: ExerciseSetAdapter.onItemClickListener {
             override fun onItemClick(position: Int, view: View, exerciseSet: ExerciseSet) {
-                singleExerciseSetPopUpMenu(view, exerciseSet)
+                // check if it's a dropset that got clicked on
+                if (exerciseSet.setNumber != Int.MAX_VALUE) {
+                    singleExerciseSetPopUpMenu(view, exerciseSet)
+                }
+                // if it's a dropset, the only option is to delete it
+                else {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(resources.getString(R.string.ConfirmDeleteSetTitle))
+                        .setNegativeButton(resources.getString(R.string.Cancel)) { dialog, which ->
+                            // nothing
+                        }
+                        .setPositiveButton(resources.getString(R.string.Delete)) { dialog, which ->
+                            deleteExerciseSet(exerciseSet)
+                        }
+                        .show()
+                }
             }
         })
 
@@ -337,6 +352,7 @@ class SingleExerciseActivity: Fragment() {
             listSize = it.size
         }
 
+
         // get last sets
         var historicSets: List<ExerciseSet>? = listOf()
         lifecycleScope.launch {
@@ -346,6 +362,12 @@ class SingleExerciseActivity: Fragment() {
             for (i in historicSetsAll.indices) {
                 val setI = historicSetsAll[i]
                 val date = LocalDate.of(setI.weightYear, setI.weightMonth, setI.weightDay)
+
+                // need to count sets on initial load so we know what setNumber the next inserted Set has
+                if (date.isEqual(today)) {
+                    setNumber++
+                    exerciseSetsToday.add(setI)
+                }
 
                 // find first set that has been saved before today
                 if (date.isBefore(today)) {
