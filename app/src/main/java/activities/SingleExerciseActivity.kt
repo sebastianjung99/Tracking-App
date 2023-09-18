@@ -64,6 +64,17 @@ class SingleExerciseActivity: Fragment() {
         lifecycleScope.launch {
             exercise = viewModel.getExerciseById(args.exerciseId)
             binding.tvExerciseTitle.text = exercise.exerciseTitle
+            // if title is empty, hide element and set margins
+            if (exercise.exerciseNote.isEmpty()) {
+                binding.cvExerciseNotes.visibility = View.GONE
+                val param = binding.cvLatestReps.layoutParams as ViewGroup.MarginLayoutParams
+                param.setMargins(0, 0, 0, 0)
+                binding.cvLatestReps.layoutParams = param
+
+            }
+            else {
+                binding.tvExerciseNotes.text = exercise.exerciseNote
+            }
         }
 
         initRecyclerView()
