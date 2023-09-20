@@ -50,6 +50,10 @@ class SingleExerciseActivity: Fragment() {
     private var setNumber = 1
     private var exerciseSetsToday = mutableListOf<ExerciseSet>()
 
+    // gets set early in onCreateView when Title, Note, ... to check wether to display "add note"
+    // or "edit note" in menu
+    private var hasNote = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,7 +64,7 @@ class SingleExerciseActivity: Fragment() {
         val factory = WorkoutViewModelFactory(dao, args.workoutId, args.exerciseId)
         viewModel = ViewModelProvider(this, factory).get(WorkoutViewModel::class.java)
 
-        // set exercise title
+        // set exercise Title, Note
         lifecycleScope.launch {
             exercise = viewModel.getExerciseById(args.exerciseId)
             binding.tvExerciseTitle.text = exercise.exerciseTitle
@@ -70,10 +74,11 @@ class SingleExerciseActivity: Fragment() {
                 val param = binding.cvLatestReps.layoutParams as ViewGroup.MarginLayoutParams
                 param.setMargins(0, 0, 0, 0)
                 binding.cvLatestReps.layoutParams = param
-
+                hasNote = false
             }
             else {
                 binding.tvExerciseNotes.text = exercise.exerciseNote
+                hasNote = true
             }
         }
 
@@ -207,6 +212,14 @@ class SingleExerciseActivity: Fragment() {
     private fun singleExercisePopupMenu(view: View) {
         val popup = PopupMenu(binding.root.context, view)
         popup.menuInflater.inflate(R.menu.single_exercise_menu, popup.menu)
+
+        if (hasNote) {
+            popup.menu.findItem(R.id.option_exerciseAddNote).isVisible = false
+        }
+        else {
+            popup.menu.findItem(R.id.option_exerciseEditNote).isVisible = false
+        }
+
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.option_edit -> {
@@ -275,6 +288,10 @@ class SingleExerciseActivity: Fragment() {
                 }
                 R.id.option_exerciseAddNote -> {
                     // TODO implement option_exerciseAddNote functionality
+                    true
+                }
+                R.id.option_exerciseEditNote -> {
+                    // TODO implement option_exerciseEditNote functionality
                     true
                 }
                 R.id.option_showData -> {

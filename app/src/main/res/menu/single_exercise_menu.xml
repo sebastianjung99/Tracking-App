@@ -7,6 +7,9 @@
         android:id="@+id/option_exerciseAddNote"
         android:title="@string/AddNote" />
     <item
+        android:id="@+id/option_exerciseEditNote"
+        android:title="@string/EditNote" />
+    <item
         android:id="@+id/option_showData"
         android:title="@string/ShowData" />
 </menu>

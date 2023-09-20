@@ -106,6 +106,39 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"/>
 
+        <EditText
+            android:id="@+id/etExerciseNote"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/ExerciseTitle"
+            android:inputType="text"
+            android:singleLine="false"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/btnEditExerciseNoteCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/Cancel"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            app:srcCompat="@drawable/close_thick"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/btnEditExerciseNoteSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/Save"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            app:srcCompat="@drawable/check_bold"
+            android:visibility="gone"/>
+
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
