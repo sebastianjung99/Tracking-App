@@ -284,7 +284,7 @@ class ExercisesActivity : Fragment() {
                             .findViewById<EditText>(R.id.etExercise)
                     val editExerciseSaveButton: ImageButton =
                         binding.rvExercises.findContainingItemView(btnView)!!
-                            .findViewById<ImageButton>(R.id.btnEditExerciseSave)
+                            .findViewById<ImageButton>(R.id.btnSingleExerciseSave)
                     val editExerciseCancelButton: ImageButton =
                         binding.rvExercises.findContainingItemView(btnView)!!
                             .findViewById<ImageButton>(R.id.btnEditExerciseCancel)

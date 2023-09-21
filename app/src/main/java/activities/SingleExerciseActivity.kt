@@ -84,9 +84,7 @@ class SingleExerciseActivity: Fragment() {
 
         initRecyclerView()
 
-        binding.btnSingleExerciseBack.setOnClickListener {
-            findNavController().navigate(SingleExerciseActivityDirections.actionSingleExerciseToExercises(args.workoutId))
-        }
+        setBackButton()
 
         binding.btnSingleExerciseOptions.setOnClickListener {
             singleExercisePopupMenu(it)
@@ -229,14 +227,14 @@ class SingleExerciseActivity: Fragment() {
                     binding.etExerciseTitle.visibility = View.VISIBLE
                     binding.etExerciseTitle.setText(exercise.exerciseTitle)
                     binding.btnEditExerciseCancel.visibility = View.VISIBLE
-                    binding.btnEditExerciseSave.visibility = View.VISIBLE
+                    binding.btnSingleExerciseSave.visibility = View.VISIBLE
 
                     // set focus and show soft keyboard
                     binding.etExerciseTitle.requestFocus()
                     WindowCompat.getInsetsController(requireActivity().window, binding.etExerciseTitle).show(
                         WindowInsetsCompat.Type.ime())
 
-                    binding.btnEditExerciseSave.setOnClickListener {
+                    binding.btnSingleExerciseSave.setOnClickListener {
                         // check if empty
                         val title = binding.etExerciseTitle.text.toString()
                         if (title.trim().isEmpty()) {
@@ -264,7 +262,7 @@ class SingleExerciseActivity: Fragment() {
                             binding.btnSingleExerciseOptions.visibility = View.VISIBLE
                             binding.etExerciseTitle.visibility = View.GONE
                             binding.btnEditExerciseCancel.visibility = View.GONE
-                            binding.btnEditExerciseSave.visibility = View.GONE
+                            binding.btnSingleExerciseSave.visibility = View.GONE
 
                             Toast.makeText(
                                 requireContext(),
@@ -281,7 +279,7 @@ class SingleExerciseActivity: Fragment() {
                         binding.btnSingleExerciseOptions.visibility = View.VISIBLE
                         binding.etExerciseTitle.visibility = View.GONE
                         binding.btnEditExerciseCancel.visibility = View.GONE
-                        binding.btnEditExerciseSave.visibility = View.GONE
+                        binding.btnSingleExerciseSave.visibility = View.GONE
                     }
 
                     true
@@ -291,7 +289,62 @@ class SingleExerciseActivity: Fragment() {
                     true
                 }
                 R.id.option_exerciseEditNote -> {
-                    // TODO implement option_exerciseEditNote functionality
+                    // hide & show elements and set text
+                    binding.tvExerciseNotes.visibility = View.GONE
+                    binding.etExerciseNote.setText(exercise.exerciseNote)
+                    binding.etExerciseNote.visibility = View.VISIBLE
+                    binding.btnSingleExerciseOptions.visibility = View.GONE
+                    binding.btnSingleExerciseSave.visibility = View.VISIBLE
+
+                    // set focus and show soft keyboard
+                    binding.etExerciseTitle.requestFocus()
+                    WindowCompat.getInsetsController(requireActivity().window, binding.etExerciseNote).show(
+                        WindowInsetsCompat.Type.ime())
+
+                    // set click functionalities
+                    binding.btnSingleExerciseBack.setOnClickListener {
+                        requireActivity().hideKeyboard()
+
+                        binding.tvExerciseNotes.visibility = View.VISIBLE
+                        binding.etExerciseNote.visibility = View.GONE
+                        binding.btnSingleExerciseOptions.visibility = View.VISIBLE
+                        binding.btnSingleExerciseSave.visibility = View.GONE
+
+                        // restore intended default behaviour of back button
+                        setBackButton()
+                    }
+
+                    binding.btnSingleExerciseSave.setOnClickListener {
+                        requireActivity().hideKeyboard()
+
+                        // update database
+                        viewModel.updateExercise(
+                            Exercise(
+                                exerciseId = exercise.exerciseId,
+                                exerciseTitle = exercise.exerciseTitle,
+                                exerciseNote = binding.etExerciseNote.text.toString()
+                            )
+                        )
+
+                        // hide & show elements and set text
+                        binding.tvExerciseNotes.text = binding.etExerciseNote.text.toString()
+                        binding.tvExerciseNotes.visibility = View.VISIBLE
+                        binding.etExerciseNote.visibility = View.GONE
+                        binding.btnSingleExerciseOptions.visibility = View.VISIBLE
+                        binding.btnSingleExerciseSave.visibility = View.GONE
+
+                        // restore intended default behaviour of back button
+                        setBackButton()
+
+                        // make toast
+                        Snackbar.make(
+                            requireContext(),
+                            binding.root,
+                            getString(R.string.ExerciseNoteUpdated),
+                            Snackbar.LENGTH_SHORT
+                        ).setAction("X"){}.show()
+                    }
+
                     true
                 }
                 R.id.option_showData -> {
@@ -423,6 +476,12 @@ class SingleExerciseActivity: Fragment() {
             historicSetsAdapter.notifyDataSetChanged()
         }
 
+    }
+
+    private fun setBackButton() {
+        binding.btnSingleExerciseBack.setOnClickListener {
+            findNavController().navigate(SingleExerciseActivityDirections.actionSingleExerciseToExercises(args.workoutId))
+        }
     }
 
 }
