@@ -273,6 +273,8 @@ class ExercisesActivity : Fragment() {
                 R.id.option_edit -> {
                     // hide exercise title and edit button, show edit Text and cancel+save button
 
+                    // TODO refactor this and delete cancel button, make back button functionality of cancel, don't forget to set default behavior of back button afterwards (see setBackButton() in SingleExerciseActivity)
+
                     val exerciseTextView: TextView =
                         binding.rvExercises.findContainingItemView(btnView)!!
                             .findViewById<TextView>(R.id.tvExercise)

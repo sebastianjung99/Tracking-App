@@ -226,7 +226,6 @@ class SingleExerciseActivity: Fragment() {
                     binding.btnSingleExerciseOptions.visibility = View.GONE
                     binding.etExerciseTitle.visibility = View.VISIBLE
                     binding.etExerciseTitle.setText(exercise.exerciseTitle)
-                    binding.btnEditExerciseCancel.visibility = View.VISIBLE
                     binding.btnSingleExerciseSave.visibility = View.VISIBLE
 
                     // set focus and show soft keyboard
@@ -261,8 +260,10 @@ class SingleExerciseActivity: Fragment() {
                             binding.tvExerciseTitle.text = title
                             binding.btnSingleExerciseOptions.visibility = View.VISIBLE
                             binding.etExerciseTitle.visibility = View.GONE
-                            binding.btnEditExerciseCancel.visibility = View.GONE
                             binding.btnSingleExerciseSave.visibility = View.GONE
+
+                            // restore intended default behaviour of back button
+                            setBackButton()
 
                             Toast.makeText(
                                 requireContext(),
@@ -272,14 +273,17 @@ class SingleExerciseActivity: Fragment() {
                         }
                     }
 
-                    binding.btnEditExerciseCancel.setOnClickListener {
+                    binding.btnSingleExerciseBack.setOnClickListener {
                         requireActivity().hideKeyboard()
+
                         // hide and show relevant elements
                         binding.tvExerciseTitle.visibility = View.VISIBLE
                         binding.btnSingleExerciseOptions.visibility = View.VISIBLE
                         binding.etExerciseTitle.visibility = View.GONE
-                        binding.btnEditExerciseCancel.visibility = View.GONE
                         binding.btnSingleExerciseSave.visibility = View.GONE
+
+                        // restore intended default behaviour of back button
+                        setBackButton()
                     }
 
                     true
