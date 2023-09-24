@@ -88,9 +88,7 @@ class ExercisesActivity : Fragment() {
             }
         })
 
-        binding.btnExercisesBack.setOnClickListener {
-            findNavController().navigate(ExercisesActivityDirections.actionExercisesToWorkouts())
-        }
+        setBackButton()
 
         binding.btnWorkoutOptions.setOnClickListener {
             exercisesPopUpMenu(it)
@@ -197,7 +195,6 @@ class ExercisesActivity : Fragment() {
                     binding.btnWorkoutOptions.visibility = View.GONE
                     binding.etWorkoutTitle.visibility = View.VISIBLE
                     binding.etWorkoutTitle.setText(workout.workoutTitle)
-                    binding.btnEditWorkoutCancel.visibility = View.VISIBLE
                     binding.btnEditWorkoutSave.visibility = View.VISIBLE
 
                     // set focus and show soft keyboard
@@ -232,8 +229,10 @@ class ExercisesActivity : Fragment() {
                             binding.tvWorkoutTitle.text = title
                             binding.btnWorkoutOptions.visibility = View.VISIBLE
                             binding.etWorkoutTitle.visibility = View.GONE
-                            binding.btnEditWorkoutCancel.visibility = View.GONE
                             binding.btnEditWorkoutSave.visibility = View.GONE
+
+                            // restore intended default behaviour of back button
+                            setBackButton()
 
                             Toast.makeText(
                                 requireContext(),
@@ -243,14 +242,16 @@ class ExercisesActivity : Fragment() {
                         }
                     }
 
-                    binding.btnEditWorkoutCancel.setOnClickListener {
+                    binding.btnExercisesBack.setOnClickListener {
                         requireActivity().hideKeyboard()
                         // hide and show relevant elements
                         binding.tvWorkoutTitle.visibility = View.VISIBLE
                         binding.btnWorkoutOptions.visibility = View.VISIBLE
                         binding.etWorkoutTitle.visibility = View.GONE
-                        binding.btnEditWorkoutCancel.visibility = View.GONE
                         binding.btnEditWorkoutSave.visibility = View.GONE
+
+                        // restore intended default behaviour of back button
+                        setBackButton()
                     }
 
                     true
@@ -402,6 +403,12 @@ class ExercisesActivity : Fragment() {
                 listSize = it.size
                 adapter.notifyDataSetChanged()
             }
+        }
+    }
+
+    private fun setBackButton() {
+        binding.btnExercisesBack.setOnClickListener {
+            findNavController().navigate(ExercisesActivityDirections.actionExercisesToWorkouts())
         }
     }
 

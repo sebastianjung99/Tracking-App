@@ -62,17 +62,6 @@
             android:visibility="gone"/>
 
         <ImageButton
-            android:id="@+id/btnEditWorkoutCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00FFFFFF"
-            android:contentDescription="@string/Cancel"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            app:srcCompat="@drawable/close_thick"
-            android:visibility="gone"/>
-
-        <ImageButton
             android:id="@+id/btnEditWorkoutSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
