@@ -23,6 +23,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import Other.Gesture
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
 import com.google.android.material.snackbar.Snackbar
 import data.TrackingAppDatabase
@@ -247,6 +249,13 @@ class WorkoutsActivity : Fragment() {
         adapter = WorkoutsAdapter()
         binding.rvWorkouts.adapter = adapter
         binding.rvWorkouts.layoutManager = LinearLayoutManager(requireContext())
+
+        // add divider
+        var dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
+        ResourcesCompat.getDrawable(resources, R.drawable.divider, null)?.let {
+            dividerItemDecoration.setDrawable(it)
+        }
+        binding.rvWorkouts.addItemDecoration(dividerItemDecoration)
 
         // display workouts list
         var listSize = 0
