@@ -45,7 +45,8 @@ class DataActivity: Fragment() {
 
         // display data selection list
         var dataList = arrayListOf<String>(
-            "Exercises"
+            "Exercises",
+            "Weight"
         )
         adapter.setList(dataList)
     }
