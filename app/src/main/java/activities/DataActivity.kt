@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,17 @@ class DataActivity: Fragment() {
         _binding = FragmentDataBinding.inflate(inflater, container, false)
 
         initRecyclerView()
+
+        adapter.setOnItemClickListener(object: DataAdapter.onItemClickListener {
+            override fun onItemClick(position: Int, view: View, selectedData: String) {
+                when (view.id) {
+                    binding.root.id -> {
+                        val action = DataActivityDirections.actionDataToSelectedDataFragment(selectedData)
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+        })
 
         return binding.root
     }

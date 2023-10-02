@@ -53,5 +53,21 @@
         android:id="@+id/data"
         android:name="activities.DataActivity"
         android:label="fragment_data"
-        tools:layout="@layout/fragment_data" />
+        tools:layout="@layout/fragment_data" >
+        <action
+            android:id="@+id/action_data_to_selectedDataFragment"
+            app:destination="@id/selectedDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectedDataFragment"
+        android:name="activities.SelectedDataActivity"
+        android:label="fragment_selected_data"
+        tools:layout="@layout/fragment_selected_data" >
+        <argument
+            android:name="selectedData"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_selectedDataFragment_to_data"
+            app:destination="@id/data" />
+    </fragment>
 </navigation>
