@@ -56,18 +56,33 @@
         tools:layout="@layout/fragment_data" >
         <action
             android:id="@+id/action_data_to_selectedDataFragment"
-            app:destination="@id/selectedDataFragment" />
+            app:destination="@id/exercisesData" />
     </fragment>
     <fragment
-        android:id="@+id/selectedDataFragment"
-        android:name="activities.SelectedDataActivity"
+        android:id="@+id/exercisesData"
+        android:name="activities.ExercisesDataActivity"
         android:label="fragment_selected_data"
-        tools:layout="@layout/fragment_selected_data" >
+        tools:layout="@layout/fragment_exercises_data" >
         <argument
             android:name="selectedData"
             app:argType="string" />
         <action
-            android:id="@+id/action_selectedDataFragment_to_data"
+            android:id="@+id/action_exercisesDataFragment_to_data"
             app:destination="@id/data" />
+        <action
+            android:id="@+id/action_exercisesDataFragment_to_singleExerciseData"
+            app:destination="@id/singleExerciseData" />
+    </fragment>
+    <fragment
+        android:id="@+id/singleExerciseData"
+        android:name="activities.SingleExerciseDataActivity"
+        android:label="fragment_single_exercise_data"
+        tools:layout="@layout/fragment_single_exercise_data" >
+        <action
+            android:id="@+id/action_singleExerciseData_to_exercisesDataFragment"
+            app:destination="@id/exercisesData" />
+        <argument
+            android:name="exerciseId"
+            app:argType="integer" />
     </fragment>
 </navigation>

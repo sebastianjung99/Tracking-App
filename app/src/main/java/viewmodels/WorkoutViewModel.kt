@@ -20,6 +20,7 @@ class WorkoutViewModel(
 ): ViewModel() {
     val workouts = dao.getAllWorkoutsOrderedByWorkoutPositionASC()
     val exercisesOfWorkout = dao.getExercisesOfWorkoutOrderedByPosition(workoutId)
+    val allExercises = dao.getAllExercises()
 
     val setsOfExerciseOfWorkoutToday = dao.getExerciseSetsByExerciseWorkoutDate(
         workoutId = workoutId,
