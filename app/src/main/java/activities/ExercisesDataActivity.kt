@@ -47,6 +47,8 @@ class ExercisesDataActivity: Fragment() {
 
         initItemClick()
 
+        setSortButton()
+
         return binding.root
     }
 
@@ -84,5 +86,9 @@ class ExercisesDataActivity: Fragment() {
                 }
             }
         })
+    }
+
+    private fun setSortButton() {
+        // TODO: implement sort button functionality
     }
 }
