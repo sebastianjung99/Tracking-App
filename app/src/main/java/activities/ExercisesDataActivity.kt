@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -90,5 +91,25 @@ class ExercisesDataActivity: Fragment() {
 
     private fun setSortButton() {
         // TODO: implement sort button functionality
+        binding.btnSortData.setOnClickListener {
+            val popup = PopupMenu(binding.root.context, it)
+            popup.menuInflater.inflate(R.menu.sort_menu, popup.menu)
+            popup.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.option_sortById -> {
+                        adapter.sortById()
+                        adapter.notifyDataSetChanged()
+                        true
+                    }
+                    R.id.option_sortByTitle -> {
+                        adapter.sortByTitle()
+                        adapter.notifyDataSetChanged()
+                        true
+                    }
+                    else -> true
+                }
+            }
+            popup.show()
+        }
     }
 }

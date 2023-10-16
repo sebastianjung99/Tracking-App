@@ -51,4 +51,6 @@
     <string name="ExerciseNoteUpdated">Exercise Note Updated</string>
     <string name="DataTitle">Data Title</string>
     <string name="SortData">SortData</string>
+    <string name="ID">ID</string>
+    <string name="Name">Name</string>
 </resources>

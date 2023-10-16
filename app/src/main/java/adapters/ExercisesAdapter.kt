@@ -42,6 +42,14 @@ class ExercisesAdapter () : RecyclerView.Adapter<ExercisesAdapter.ExercisesViewH
         exerciseList.addAll(workoutWithExercises)
     }
 
+    fun sortById() {
+        exerciseList.sortBy { it.exerciseId }
+    }
+
+    fun sortByTitle() {
+        exerciseList.sortBy { it.exerciseTitle }
+    }
+
     inner class ExercisesViewHolder(val binding: ItemExercisesBinding, listener: onItemClickListener): RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
