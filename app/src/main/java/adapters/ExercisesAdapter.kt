@@ -42,12 +42,22 @@ class ExercisesAdapter () : RecyclerView.Adapter<ExercisesAdapter.ExercisesViewH
         exerciseList.addAll(workoutWithExercises)
     }
 
-    fun sortById() {
-        exerciseList.sortBy { it.exerciseId }
+    fun reverseList() {
+        exerciseList.reverse()
     }
 
-    fun sortByTitle() {
+    fun sortById(ascending: Boolean) {
+        exerciseList.sortBy { it.exerciseId }
+        if (!ascending) {
+            reverseList()
+        }
+    }
+
+    fun sortByTitle(ascending: Boolean) {
         exerciseList.sortBy { it.exerciseTitle }
+        if (!ascending) {
+            reverseList()
+        }
     }
 
     inner class ExercisesViewHolder(val binding: ItemExercisesBinding, listener: onItemClickListener): RecyclerView.ViewHolder(binding.root) {

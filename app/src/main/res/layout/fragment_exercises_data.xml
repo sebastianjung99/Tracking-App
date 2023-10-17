@@ -39,6 +39,16 @@
             android:textStyle="bold"/>
 
         <ImageButton
+            android:id="@+id/btnAscDesc"
+            android:layout_width="36sp"
+            android:layout_height="36sp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/SortDataAscending"
+            android:src="@drawable/arrow_upward_48px" />
+
+        <ImageButton
             android:id="@+id/btnSortData"
             android:layout_width="36sp"
             android:layout_height="36sp"

@@ -31,6 +31,9 @@ class ExercisesDataActivity: Fragment() {
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var adapter: ExercisesAdapter
 
+    // set to False to sort descending
+    private var sortByAsc = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +52,8 @@ class ExercisesDataActivity: Fragment() {
         initItemClick()
 
         setSortButton()
+
+        setAscDescButton()
 
         return binding.root
     }
@@ -90,19 +95,18 @@ class ExercisesDataActivity: Fragment() {
     }
 
     private fun setSortButton() {
-        // TODO: implement sort button functionality
         binding.btnSortData.setOnClickListener {
             val popup = PopupMenu(binding.root.context, it)
             popup.menuInflater.inflate(R.menu.sort_menu, popup.menu)
             popup.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.option_sortById -> {
-                        adapter.sortById()
+                        adapter.sortById(sortByAsc)
                         adapter.notifyDataSetChanged()
                         true
                     }
                     R.id.option_sortByTitle -> {
-                        adapter.sortByTitle()
+                        adapter.sortByTitle(sortByAsc)
                         adapter.notifyDataSetChanged()
                         true
                     }
@@ -110,6 +114,22 @@ class ExercisesDataActivity: Fragment() {
                 }
             }
             popup.show()
+        }
+    }
+
+    private fun setAscDescButton() {
+        binding.btnAscDesc.setOnClickListener {
+            sortByAsc = !sortByAsc
+
+            if (sortByAsc) {
+                binding.btnAscDesc.rotation = 0F
+            }
+            else {
+                binding.btnAscDesc.rotation = 180F
+            }
+
+            adapter.reverseList()
+            adapter.notifyDataSetChanged()
         }
     }
 }
