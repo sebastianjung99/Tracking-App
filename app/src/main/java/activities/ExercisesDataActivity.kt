@@ -34,6 +34,8 @@ class ExercisesDataActivity: Fragment() {
     // set to False to sort descending
     private var sortByAsc = true
 
+    private var sortPopupCheckedItemIndex = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -98,16 +100,27 @@ class ExercisesDataActivity: Fragment() {
         binding.btnSortData.setOnClickListener {
             val popup = PopupMenu(binding.root.context, it)
             popup.menuInflater.inflate(R.menu.sort_menu, popup.menu)
+
+            // set all items in menu to non-checkable
+            for (i in 0 until popup.menu.size()) {
+                popup.menu.getItem(i).setCheckable(false)
+            }
+            // set the one last selected to checkable and checked
+            popup.menu.getItem(sortPopupCheckedItemIndex).setCheckable(true)
+            popup.menu.getItem(sortPopupCheckedItemIndex).setChecked(true)
+
             popup.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.option_sortById -> {
                         adapter.sortById(sortByAsc)
                         adapter.notifyDataSetChanged()
+                        sortPopupCheckedItemIndex = 0
                         true
                     }
                     R.id.option_sortByTitle -> {
                         adapter.sortByTitle(sortByAsc)
                         adapter.notifyDataSetChanged()
+                        sortPopupCheckedItemIndex = 1
                         true
                     }
                     else -> true
