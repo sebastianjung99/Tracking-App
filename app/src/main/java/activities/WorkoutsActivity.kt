@@ -26,6 +26,7 @@ import Other.Gesture
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.trackingapp.databinding.FragmentWorkoutsBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import data.TrackingAppDatabase
 import utils.Utils.hideKeyboard
@@ -125,7 +126,17 @@ class WorkoutsActivity : Fragment() {
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.option_delete -> {
-                    deleteWorkoutData(workout.workoutId)
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(resources.getString(R.string.ConfirmDeleteWorkoutTitle))
+                        .setMessage(resources.getString(R.string.ConfirmDeleteWorkoutText))
+                        .setNegativeButton(resources.getString(R.string.Cancel)) { dialog, which ->
+                            // nothing
+                        }
+                        .setPositiveButton(resources.getString(R.string.Delete)) { dialog, which ->
+                            deleteWorkoutData(workout.workoutId)
+                        }
+                        .show()
+
                     true
                 }
                 R.id.option_edit -> {

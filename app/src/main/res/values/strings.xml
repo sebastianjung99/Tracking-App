@@ -44,6 +44,8 @@
     <string name="AddNote">Add Note</string>
     <string name="ConfirmDeleteSetTitle">Delete Set?</string>
     <string name="ConfirmDeleteSetText">Do you really want to delete this Set?</string>
+    <string name="ConfirmDeleteWorkoutTitle">Delete Workout?</string>
+    <string name="ConfirmDeleteWorkoutText">This will NOT delete exercises used in this workout?</string>
     <string name="EditName">Edit Name</string>
     <string name="ShowData">Show Data</string>
     <string name="EditSet">Edit Set</string>
