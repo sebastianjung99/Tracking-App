@@ -46,6 +46,7 @@
     <string name="ConfirmDeleteSetText">Do you really want to delete this Set?</string>
     <string name="ConfirmDeleteWorkoutTitle">Delete Workout?</string>
     <string name="ConfirmDeleteWorkoutText">This will NOT delete exercises used in this workout?</string>
+    <string name="ConfirmDeleteExerciseTitle">Delete Exercise?</string>
     <string name="EditName">Edit Name</string>
     <string name="ShowData">Show Data</string>
     <string name="EditSet">Edit Set</string>
@@ -56,4 +57,5 @@
     <string name="ID">ID</string>
     <string name="Name">Name</string>
     <string name="SortDataAscending">Sort Data Ascending</string>
+    <string name="DeleteAssociatedSets">Delete associated sets</string>
 </resources>

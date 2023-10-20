@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trackingapp.R
 import com.example.trackingapp.databinding.FragmentExercisesBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import data.Exercise
 import data.TrackingAppDatabase
@@ -270,7 +271,20 @@ class ExercisesActivity : Fragment() {
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.option_delete -> {
-                    deleteExercise(workoutId = args.workoutId, exerciseId = exercise.exerciseId)
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(resources.getString(R.string.ConfirmDeleteExerciseTitle))
+                        .setNeutralButton(resources.getString(R.string.Cancel)) { dialog, which ->
+                            // nothing
+                        }
+                        .setPositiveButton(resources.getString(R.string.Delete)) { dialog, which ->
+                            deleteExercise(workoutId = args.workoutId, exerciseId = exercise.exerciseId)
+                        }
+                        .setMultiChoiceItems(arrayOf(resources.getString(R.string.DeleteAssociatedSets)), booleanArrayOf(false)) {
+                            dialog, which, checked ->
+                            // TODO: implement logic to delete associated sets
+                        }
+                        .show()
+
                     true
                 }
                 R.id.option_edit -> {
