@@ -76,6 +76,9 @@ interface WorkoutDao {
     @Query("DELETE FROM exerciseSet_data_table WHERE exerciseSet_id = :exerciseSetId")
     suspend fun deleteExerciseSet(exerciseSetId: Int)
 
+    @Query("DELETE FROM exerciseSet_data_table WHERE exerciseSet_exerciseId = :exerciseId")
+    suspend fun deleteExerciseSetsByExerciseId(exerciseId: Int)
+
     @Query("SELECT * FROM exerciseSet_data_table")
     fun getAllExerciseSets(): LiveData<List<ExerciseSet>>
 

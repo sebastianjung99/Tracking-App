@@ -85,6 +85,10 @@ class WorkoutViewModel(
         dao.deleteExerciseSet(exerciseSet_id)
     }
 
+    fun deleteExerciseSetsByExerciseId(exerciseId: Int) = viewModelScope.launch {
+        dao.deleteExerciseSetsByExerciseId(exerciseId)
+    }
+
     fun updateExerciseSet(exerciseSet: ExerciseSet) = viewModelScope.launch {
         dao.updateExerciseSet(exerciseSet)
     }

@@ -281,7 +281,7 @@ class ExercisesActivity : Fragment() {
                         }
                         .setMultiChoiceItems(arrayOf(resources.getString(R.string.DeleteAssociatedSets)), booleanArrayOf(false)) {
                             dialog, which, checked ->
-                            // TODO: implement logic to delete associated sets
+                            viewModel.deleteExerciseSetsByExerciseId(exercise.exerciseId)
                         }
                         .show()
 
