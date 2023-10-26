@@ -161,6 +161,7 @@ class ExercisesActivity : Fragment() {
             workoutId = workoutId,
             exerciseId = exerciseId
         )
+        viewModel.deleteExercise(exerciseId)
         nextPosition--
     }
 
